@@ -1,4 +1,4 @@
-# PyInstaller spec for CreatorAgent — single-file executable for all platforms.
+# PyInstaller spec for Om — single-file executable for all platforms.
 # Build: pyinstaller build_binary.spec
 import sys
 from pathlib import Path
@@ -21,7 +21,7 @@ for mod in optional_imports:
             hiddenimports.remove(mod)
 
 a = Analysis(
-    ['creatoragent/agent.py'],
+    ['agent_om/agent.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -30,7 +30,6 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[
-        # Trim size — exclude things we don't use
         'tkinter', 'matplotlib', 'numpy', 'pandas', 'scipy',
         'PIL', 'PyQt5', 'PyQt6', 'PySide2', 'PySide6',
         'IPython', 'jupyter', 'notebook',
@@ -43,10 +42,9 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-# Single-file executable. Name differs per platform automatically.
-exe_name = 'creatoragent'
+exe_name = 'om'
 if sys.platform == 'win32':
-    exe_name = 'creatoragent.exe'
+    exe_name = 'om.exe'
 
 exe = EXE(
     pyz,
@@ -62,24 +60,23 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,           # CLI app — keep terminal
+    console=True,
     disable_windowed_traceback=False,
-    target_arch=None,       # auto-detect (universal2 on macOS if available)
+    target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,              # add an .ico/.icns later if you want a custom icon
+    icon=None,
 )
 
-# macOS-only: bundle as .app for .dmg packaging
 if sys.platform == 'darwin':
     app = BUNDLE(
         exe,
-        name='CreatorAgent.app',
+        name='Om.app',
         icon=None,
-        bundle_identifier='com.creatoragent.cli',
+        bundle_identifier='com.kdarshuchiha.om',
         info_plist={
-            'CFBundleName': 'CreatorAgent',
-            'CFBundleDisplayName': 'CreatorAgent',
+            'CFBundleName': 'Om',
+            'CFBundleDisplayName': 'Om',
             'CFBundleVersion': '1.0.0',
             'CFBundleShortVersionString': '1.0.0',
             'NSHighResolutionCapable': True,

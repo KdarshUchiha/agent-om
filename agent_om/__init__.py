@@ -1,0 +1,2 @@
+"""Om — God-tier AI solution architect & builder CLI tool."""
+__version__ = "1.0.0"

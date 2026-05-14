@@ -1,10 +1,10 @@
-# Contributing to CreatorAgent
+# Contributing to Om
 
 Thanks for your interest in contributing! 🎉
 
 ## 🐛 Reporting Issues
 
-Open an [issue](https://github.com/KdarshUchiha/creatoragent/issues) with:
+Open an [issue](https://github.com/KdarshUchiha/agent-om/issues) with:
 - What you expected to happen
 - What actually happened
 - Steps to reproduce
@@ -18,7 +18,7 @@ Open an [issue](https://github.com/KdarshUchiha/creatoragent/issues) with:
 4. Test your changes:
    ```bash
    pip install -e ".[all]"
-   creatoragent --demo  # smoke test
+   agent-om --demo  # smoke test
    ```
 5. Commit: `git commit -m "Add my feature"`
 6. Push: `git push origin feature/my-feature`
@@ -44,8 +44,8 @@ Open an [issue](https://github.com/KdarshUchiha/creatoragent/issues) with:
 ## 📦 Architecture Quick Tour
 
 ```
-creatoragent/
-├── creatoragent/agent.py       # Main entry point + all logic
+agent-om/
+├── agent_om/agent.py       # Main entry point + all logic
 │   ├── detect_provider()        # Auto-detect AI provider from env
 │   ├── MODES                    # Domain mode definitions
 │   ├── TOOLS / OPENAI_TOOLS     # Tool schemas

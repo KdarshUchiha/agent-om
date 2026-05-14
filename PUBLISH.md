@@ -1,11 +1,11 @@
-# Publishing CreatorAgent to GitHub
+# Publishing Om to GitHub
 
 The repo is fully prepared and committed. Follow these steps to publish it.
 
 ## 📋 Step 1: Create the GitHub Repo
 
 1. Go to **https://github.com/new**
-2. Repository name: `creatoragent`
+2. Repository name: `agent-om`
 3. Description: `God-tier AI solution architect & builder CLI — multi-provider, multi-domain`
 4. Choose **Public** (so others can install it)
 5. **Do NOT** check "Initialize with README" (we already have one)
@@ -16,10 +16,10 @@ The repo is fully prepared and committed. Follow these steps to publish it.
 From the project directory:
 
 ```bash
-cd ~/.workspace/creatoragent
+cd ~/.workspace/agent-om
 
 # Add your GitHub repo as the remote
-git remote add origin https://github.com/KdarshUchiha/creatoragent.git
+git remote add origin https://github.com/KdarshUchiha/agent-om.git
 
 # Push the main branch
 git push -u origin main
@@ -43,7 +43,7 @@ In ~10 minutes, GitHub will:
 4. Create a GitHub Release with all artifacts attached
 
 You can watch the progress at:
-`https://github.com/KdarshUchiha/creatoragent/actions`
+`https://github.com/KdarshUchiha/agent-om/actions`
 
 ## 📋 Step 4: Share It!
 
@@ -51,16 +51,16 @@ Once your release is published, anyone can install with:
 
 ### One-line install (Linux/Mac)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KdarshUchiha/creatoragent/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/KdarshUchiha/agent-om/main/install.sh | bash
 ```
 
 ### Via pip
 ```bash
-pip install "creatoragent[all] @ git+https://github.com/KdarshUchiha/creatoragent.git"
+pip install "agent-om[all] @ git+https://github.com/KdarshUchiha/agent-om.git"
 ```
 
 ### Direct binary download
-Go to `https://github.com/KdarshUchiha/creatoragent/releases/latest`
+Go to `https://github.com/KdarshUchiha/agent-om/releases/latest`
 
 ## 🌟 Step 5: (Optional) Make It Official
 
@@ -71,22 +71,22 @@ Once you have some users:
 pip install build twine
 python -m build
 twine upload dist/*
-# Now: pip install creatoragent
+# Now: pip install agent-om
 ```
 
 ### Create a Homebrew tap (macOS users)
 ```bash
 # Create a separate repo: homebrew-tap
-# Add a Formula: creatoragent.rb
-# Now: brew install KdarshUchiha/tap/creatoragent
+# Add a Formula: agent-om.rb
+# Now: brew install KdarshUchiha/tap/agent-om
 ```
 
 ### Submit to Snap Store (Linux users)
 ```bash
 snapcraft init
-snapcraft register creatoragent
+snapcraft register agent-om
 snapcraft upload --release=stable
-# Now: snap install creatoragent
+# Now: snap install agent-om
 ```
 
 ## 🔧 Updating the Repo Later
@@ -114,7 +114,7 @@ git push origin v1.1.0
 - Check that workflow permissions allow writing (Settings → Actions → Workflow permissions → Read and write)
 
 **Release builds fail**
-- Check `https://github.com/KdarshUchiha/creatoragent/actions` for the error log
+- Check `https://github.com/KdarshUchiha/agent-om/actions` for the error log
 - The most common issue is missing tag — make sure you tagged with `v` prefix (e.g. `v1.0.0`, not `1.0.0`)
 
 ---

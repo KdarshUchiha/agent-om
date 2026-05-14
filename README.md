@@ -1,16 +1,21 @@
-# 🤖 CreatorAgent
+# ॐ Om
 
 > **God-tier AI solution architect & builder.** Build AAA games, agentic AI systems, full-stack apps, mobile apps, infrastructure — any domain, any platform.
 
 Multi-provider LLM agent CLI that works with **free** AI providers (Gemini, Groq) or paid (Claude). No API key needed for demo mode.
 
 ```
-   ____                _              _                    _
-  / ___|_ __ ___  __ _| |_ ___  _ __/ \   __ _  ___ _ __ | |_
- | |   | '__/ _ \/ _` | __/ _ \| '__/ _ \ / _` |/ _ \ '_ \| __|
- | |___| | |  __/ (_| | || (_) | | / ___ \ (_| |  __/ | | | |_
-  \____|_|  \___|\__,_|\__\___/|_|/_/   \_\__, |\___|_| |_|\__|
-                                           |___/
+       ___           ___
+      /\  \         /\__\          ╭──────────────────────────╮
+     /::\  \       /::|  |         │   ॐ   Om — the Creator   │
+    /:/\:\  \     /:|:|  |         ╰──────────────────────────╯
+   /:/  \:\  \   /:/|:|__|__
+  /:/__/ \:\__\ /:/ |::::\__\        Solution architect &
+  \:\  \ /:/  / \/__/~~/:/  /        builder for any domain
+   \:\  /:/  /        /:/  /
+    \:\/:/  /        /:/  /              ⚡ Multi-provider
+     \::/  /        /:/  /              🎮 Multi-domain
+      \/__/         \/__/               🛠️  Multi-platform
 ```
 
 ## ⚡ Install
@@ -19,54 +24,60 @@ Multi-provider LLM agent CLI that works with **free** AI providers (Gemini, Groq
 
 ```bash
 # Free providers (Gemini + Groq)
-pip install "creatoragent[gemini,groq] @ git+https://github.com/KdarshUchiha/creatoragent.git"
+pip install "agent-om[gemini,groq] @ git+https://github.com/KdarshUchiha/agent-om.git"
 
 # Or with all providers including Claude
-pip install "creatoragent[all] @ git+https://github.com/KdarshUchiha/creatoragent.git"
+pip install "agent-om[all] @ git+https://github.com/KdarshUchiha/agent-om.git"
 ```
 
 ### 📥 Via native binary (no Python needed)
 
-Grab the right one from the [Releases](https://github.com/KdarshUchiha/creatoragent/releases/latest) page:
+Grab the right one from the [Releases](https://github.com/KdarshUchiha/agent-om/releases/latest) page:
 
 | Platform | File |
 |---|---|
-| 🐧 **Linux** | `creatoragent-linux-x64.tar.gz` or `creatoragent_1.0.0_amd64.deb` |
-| 🪟 **Windows** | `creatoragent.exe` or `creatoragent-windows-x64.zip` |
-| 🍎 **macOS (Apple Silicon)** | `CreatorAgent-1.0.0-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `CreatorAgent-1.0.0-x86_64.dmg` |
+| 🐧 **Linux** | `om-linux-x64.tar.gz` or `agent-om_1.0.0_amd64.deb` |
+| 🪟 **Windows** | `om.exe` or `om-windows-x64.zip` |
+| 🍎 **macOS (Apple Silicon)** | `Om-1.0.0-arm64.dmg` |
+| 🍎 **macOS (Intel)** | `Om-1.0.0-x86_64.dmg` |
 
 Quick install snippets:
 ```bash
 # Linux
-curl -L https://github.com/KdarshUchiha/creatoragent/releases/latest/download/creatoragent-linux-x64.tar.gz | tar -xz
-sudo mv creatoragent /usr/local/bin/
+curl -L https://github.com/KdarshUchiha/agent-om/releases/latest/download/om-linux-x64.tar.gz | tar -xz
+sudo mv om /usr/local/bin/
 
 # macOS (Apple Silicon)
-curl -LO https://github.com/KdarshUchiha/creatoragent/releases/latest/download/CreatorAgent-1.0.0-arm64.dmg
-open CreatorAgent-1.0.0-arm64.dmg
+curl -LO https://github.com/KdarshUchiha/agent-om/releases/latest/download/Om-1.0.0-arm64.dmg
+open Om-1.0.0-arm64.dmg
 
 # Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/KdarshUchiha/creatoragent/releases/latest/download/creatoragent.exe" -OutFile creatoragent.exe
+Invoke-WebRequest -Uri "https://github.com/KdarshUchiha/agent-om/releases/latest/download/om.exe" -OutFile om.exe
+```
+
+### 🚀 One-line installer (Linux/Mac)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/KdarshUchiha/agent-om/main/install.sh | bash
 ```
 
 ## 🚀 Quick Start
 
 ```bash
 # Demo mode (no API key needed)
-creatoragent --demo
+om --demo
 
 # With FREE Gemini API (recommended)
 export GEMINI_API_KEY=your-key   # get from aistudio.google.com
-creatoragent
+om
 
 # With FREE Groq API (super fast)
 export GROQ_API_KEY=your-key     # get from console.groq.com
-creatoragent
+om
 
 # With Claude API (paid, most capable)
 export ANTHROPIC_API_KEY=your-key
-creatoragent
+om
 ```
 
 Once running, just describe what you want:
@@ -84,7 +95,7 @@ Once running, just describe what you want:
 ## ✨ Features
 
 ### 🎯 8 Domain Modes
-The agent specializes its expertise based on your task:
+Om specializes its expertise based on your task:
 
 | Mode | Specialization |
 |---|---|
@@ -100,7 +111,7 @@ The agent specializes its expertise based on your task:
 Switch modes with `/mode game`, `/mode ai`, etc.
 
 ### 🔧 8 Powerful Tools
-The agent autonomously uses these tools to build:
+Om autonomously uses these tools to build:
 - **create_file** — write complete production-quality files
 - **read_file** — understand existing code
 - **edit_file** — surgical find-and-replace edits
@@ -174,10 +185,10 @@ The agent autonomously uses these tools to build:
 ## 🛠️ Build From Source
 
 ```bash
-git clone https://github.com/KdarshUchiha/creatoragent.git
-cd creatoragent
+git clone https://github.com/KdarshUchiha/agent-om.git
+cd agent-om
 pip install -e ".[all]"
-creatoragent
+om
 ```
 
 For native binaries, see [BUILD.md](BUILD.md).
@@ -196,4 +207,4 @@ Built with [Rich](https://github.com/Textualize/rich) for the beautiful terminal
 
 ---
 
-**⭐ If this tool helps you, give it a star!**
+**⭐ If Om helps you, give it a star!** ॐ

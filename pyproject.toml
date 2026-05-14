@@ -3,14 +3,14 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "creatoragent"
+name = "agent-om"
 version = "1.0.0"
-description = "God-tier AI solution architect & builder — games, AI agents, full-stack apps, systems, any domain."
+description = "Om — God-tier AI solution architect & builder. Games, AI agents, full-stack apps, systems, any domain."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
-authors = [{name = "CreatorAgent"}]
-keywords = ["ai", "agent", "cli", "code-generator", "solution-architect", "game-dev", "llm"]
+authors = [{name = "KdarshUchiha"}]
+keywords = ["ai", "agent", "cli", "code-generator", "solution-architect", "game-dev", "llm", "om"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -35,11 +35,13 @@ claude = ["anthropic>=0.40"]
 all = ["google-genai>=1.0", "groq>=0.9", "anthropic>=0.40"]
 
 [project.scripts]
-creatoragent = "creatoragent.agent:main"
-cagent = "creatoragent.agent:main"
+om = "agent_om.agent:main"
+agent-om = "agent_om.agent:main"
 
 [project.urls]
-Homepage = "https://github.com/creatoragent/creatoragent"
+Homepage = "https://github.com/KdarshUchiha/agent-om"
+Repository = "https://github.com/KdarshUchiha/agent-om"
+Issues = "https://github.com/KdarshUchiha/agent-om/issues"
 
 [tool.setuptools.packages.find]
-include = ["creatoragent*"]
+include = ["agent_om*"]

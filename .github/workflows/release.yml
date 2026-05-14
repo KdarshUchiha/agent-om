@@ -23,25 +23,26 @@ jobs:
           pip install -e ".[all]" pyinstaller
           pyinstaller build_binary.spec --clean --noconfirm
           cd dist
-          tar -czf creatoragent-linux-x64.tar.gz creatoragent
+          tar -czf om-linux-x64.tar.gz om
           # .deb package
-          DEB=creatoragent_1.0.0_amd64
+          DEB=agent-om_1.0.0_amd64
           mkdir -p $DEB/DEBIAN $DEB/usr/local/bin
-          cp creatoragent $DEB/usr/local/bin/
-          cat > $DEB/DEBIAN/control <<EOF
-          Package: creatoragent
+          cp om $DEB/usr/local/bin/
+          chmod 755 $DEB/usr/local/bin/om
+          cat > $DEB/DEBIAN/control <<CTRL
+          Package: agent-om
           Version: 1.0.0
           Architecture: amd64
-          Maintainer: CreatorAgent
-          Description: God-tier AI solution architect & builder CLI
-          EOF
+          Maintainer: KdarshUchiha
+          Description: Om — God-tier AI solution architect & builder CLI
+          CTRL
           dpkg-deb --build $DEB
       - uses: actions/upload-artifact@v4
         with:
           name: linux
           path: |
-            dist/creatoragent-linux-x64.tar.gz
-            dist/creatoragent_1.0.0_amd64.deb
+            dist/om-linux-x64.tar.gz
+            dist/agent-om_1.0.0_amd64.deb
 
   build-windows:
     runs-on: windows-latest
@@ -54,13 +55,13 @@ jobs:
         run: |
           pip install -e ".[all]" pyinstaller
           pyinstaller build_binary.spec --clean --noconfirm
-          Compress-Archive -Path dist\creatoragent.exe -DestinationPath dist\creatoragent-windows-x64.zip
+          Compress-Archive -Path dist\om.exe -DestinationPath dist\om-windows-x64.zip
       - uses: actions/upload-artifact@v4
         with:
           name: windows
           path: |
-            dist/creatoragent.exe
-            dist/creatoragent-windows-x64.zip
+            dist/om.exe
+            dist/om-windows-x64.zip
 
   build-macos:
     strategy:
@@ -76,25 +77,23 @@ jobs:
         run: |
           pip install -e ".[all]" pyinstaller
           pyinstaller build_binary.spec --clean --noconfirm
-          # .dmg
           mkdir -p build/dmg_src
-          cp -R dist/CreatorAgent.app build/dmg_src/
+          cp -R dist/Om.app build/dmg_src/
           ln -s /Applications build/dmg_src/Applications
           ARCH=$(uname -m)
-          hdiutil create -volname "CreatorAgent 1.0.0" \
+          hdiutil create -volname "Om 1.0.0" \
             -srcfolder build/dmg_src \
             -ov -format UDZO \
-            dist/CreatorAgent-1.0.0-$ARCH.dmg
-          # CLI tarball
-          cp dist/CreatorAgent.app/Contents/MacOS/creatoragent dist/creatoragent-cli
+            dist/Om-1.0.0-$ARCH.dmg
+          cp dist/Om.app/Contents/MacOS/om dist/om-cli
           cd dist
-          tar -czf creatoragent-macos-$ARCH.tar.gz creatoragent-cli
+          tar -czf om-macos-$ARCH.tar.gz om-cli
       - uses: actions/upload-artifact@v4
         with:
           name: macos-${{ matrix.os }}
           path: |
-            dist/CreatorAgent-1.0.0-*.dmg
-            dist/creatoragent-macos-*.tar.gz
+            dist/Om-1.0.0-*.dmg
+            dist/om-macos-*.tar.gz
 
   release:
     needs: [build-linux, build-windows, build-macos]
@@ -109,3 +108,4 @@ jobs:
         with:
           files: artifacts/**/*
           generate_release_notes: true
+          name: "Om ${{ github.ref_name }}"
