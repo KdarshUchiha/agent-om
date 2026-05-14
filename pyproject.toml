@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "creatoragent"
+version = "1.0.0"
+description = "God-tier AI solution architect & builder — games, AI agents, full-stack apps, systems, any domain."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "CreatorAgent"}]
+keywords = ["ai", "agent", "cli", "code-generator", "solution-architect", "game-dev", "llm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Code Generators",
+]
+dependencies = [
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+gemini = ["google-genai>=1.0"]
+groq = ["groq>=0.9"]
+claude = ["anthropic>=0.40"]
+all = ["google-genai>=1.0", "groq>=0.9", "anthropic>=0.40"]
+
+[project.scripts]
+creatoragent = "creatoragent.agent:main"
+cagent = "creatoragent.agent:main"
+
+[project.urls]
+Homepage = "https://github.com/creatoragent/creatoragent"
+
+[tool.setuptools.packages.find]
+include = ["creatoragent*"]

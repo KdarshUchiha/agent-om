@@ -1,0 +1,111 @@
+# Auto-build native installers for Linux, Windows, and macOS on every release.
+# Triggered by: pushing a git tag like v1.0.0, or manually via workflow_dispatch.
+name: Release Builds
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create the GitHub Release
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build
+        run: |
+          pip install -e ".[all]" pyinstaller
+          pyinstaller build_binary.spec --clean --noconfirm
+          cd dist
+          tar -czf creatoragent-linux-x64.tar.gz creatoragent
+          # .deb package
+          DEB=creatoragent_1.0.0_amd64
+          mkdir -p $DEB/DEBIAN $DEB/usr/local/bin
+          cp creatoragent $DEB/usr/local/bin/
+          cat > $DEB/DEBIAN/control <<EOF
+          Package: creatoragent
+          Version: 1.0.0
+          Architecture: amd64
+          Maintainer: CreatorAgent
+          Description: God-tier AI solution architect & builder CLI
+          EOF
+          dpkg-deb --build $DEB
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: |
+            dist/creatoragent-linux-x64.tar.gz
+            dist/creatoragent_1.0.0_amd64.deb
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build
+        run: |
+          pip install -e ".[all]" pyinstaller
+          pyinstaller build_binary.spec --clean --noconfirm
+          Compress-Archive -Path dist\creatoragent.exe -DestinationPath dist\creatoragent-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            dist/creatoragent.exe
+            dist/creatoragent-windows-x64.zip
+
+  build-macos:
+    strategy:
+      matrix:
+        os: [macos-13, macos-14]   # macos-13 = Intel, macos-14 = Apple Silicon
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build
+        run: |
+          pip install -e ".[all]" pyinstaller
+          pyinstaller build_binary.spec --clean --noconfirm
+          # .dmg
+          mkdir -p build/dmg_src
+          cp -R dist/CreatorAgent.app build/dmg_src/
+          ln -s /Applications build/dmg_src/Applications
+          ARCH=$(uname -m)
+          hdiutil create -volname "CreatorAgent 1.0.0" \
+            -srcfolder build/dmg_src \
+            -ov -format UDZO \
+            dist/CreatorAgent-1.0.0-$ARCH.dmg
+          # CLI tarball
+          cp dist/CreatorAgent.app/Contents/MacOS/creatoragent dist/creatoragent-cli
+          cd dist
+          tar -czf creatoragent-macos-$ARCH.tar.gz creatoragent-cli
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.os }}
+          path: |
+            dist/CreatorAgent-1.0.0-*.dmg
+            dist/creatoragent-macos-*.tar.gz
+
+  release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true

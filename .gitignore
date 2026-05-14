@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.eggs/
+.Python
+
+# PyInstaller / build outputs
+build/
+dist/
+*.spec.bak
+*.manifest
+
+# Virtual envs
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Sessions / projects (user data — should not be committed)
+.sessions/
+projects/
+
+# Secrets
+.env
+.env.local
+*.key
+
+# OS
+Thumbs.db
+desktop.ini
