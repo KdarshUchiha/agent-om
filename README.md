@@ -19,15 +19,15 @@ Multi-provider LLM agent CLI that works with **free** AI providers (Gemini, Groq
 
 ```bash
 # Free providers (Gemini + Groq)
-pip install "creatoragent[gemini,groq] @ git+https://github.com/YOUR_USERNAME/creatoragent.git"
+pip install "creatoragent[gemini,groq] @ git+https://github.com/KdarshUchiha/creatoragent.git"
 
 # Or with all providers including Claude
-pip install "creatoragent[all] @ git+https://github.com/YOUR_USERNAME/creatoragent.git"
+pip install "creatoragent[all] @ git+https://github.com/KdarshUchiha/creatoragent.git"
 ```
 
 ### 📥 Via native binary (no Python needed)
 
-Grab the right one from the [Releases](https://github.com/YOUR_USERNAME/creatoragent/releases/latest) page:
+Grab the right one from the [Releases](https://github.com/KdarshUchiha/creatoragent/releases/latest) page:
 
 | Platform | File |
 |---|---|
@@ -39,15 +39,15 @@ Grab the right one from the [Releases](https://github.com/YOUR_USERNAME/creatora
 Quick install snippets:
 ```bash
 # Linux
-curl -L https://github.com/YOUR_USERNAME/creatoragent/releases/latest/download/creatoragent-linux-x64.tar.gz | tar -xz
+curl -L https://github.com/KdarshUchiha/creatoragent/releases/latest/download/creatoragent-linux-x64.tar.gz | tar -xz
 sudo mv creatoragent /usr/local/bin/
 
 # macOS (Apple Silicon)
-curl -LO https://github.com/YOUR_USERNAME/creatoragent/releases/latest/download/CreatorAgent-1.0.0-arm64.dmg
+curl -LO https://github.com/KdarshUchiha/creatoragent/releases/latest/download/CreatorAgent-1.0.0-arm64.dmg
 open CreatorAgent-1.0.0-arm64.dmg
 
 # Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/YOUR_USERNAME/creatoragent/releases/latest/download/creatoragent.exe" -OutFile creatoragent.exe
+Invoke-WebRequest -Uri "https://github.com/KdarshUchiha/creatoragent/releases/latest/download/creatoragent.exe" -OutFile creatoragent.exe
 ```
 
 ## 🚀 Quick Start
@@ -174,7 +174,7 @@ The agent autonomously uses these tools to build:
 ## 🛠️ Build From Source
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/creatoragent.git
+git clone https://github.com/KdarshUchiha/creatoragent.git
 cd creatoragent
 pip install -e ".[all]"
 creatoragent

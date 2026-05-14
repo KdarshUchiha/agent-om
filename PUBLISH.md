@@ -13,35 +13,21 @@ The repo is fully prepared and committed. Follow these steps to publish it.
 
 ## 📋 Step 2: Push Your Code
 
-Replace `YOUR_USERNAME` with your actual GitHub username:
+From the project directory:
 
 ```bash
 cd ~/.workspace/creatoragent
 
 # Add your GitHub repo as the remote
-git remote add origin https://github.com/YOUR_USERNAME/creatoragent.git
+git remote add origin https://github.com/KdarshUchiha/creatoragent.git
 
 # Push the main branch
 git push -u origin main
 ```
 
-If you have 2FA enabled, use a [Personal Access Token](https://github.com/settings/tokens) instead of your password when prompted.
+If you have 2FA enabled, use a [Personal Access Token](https://github.com/settings/tokens) instead of your password when prompted (or set up [SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)).
 
-## 📋 Step 3: Update Placeholders
-
-The README and install script have `YOUR_USERNAME` placeholders. Replace them:
-
-```bash
-# On Linux/Mac:
-sed -i 's/YOUR_USERNAME/your-actual-username/g' README.md install.sh CONTRIBUTING.md
-
-# Then commit:
-git add -A
-git commit -m "Update GitHub username"
-git push
-```
-
-## 📋 Step 4: Create Your First Release
+## 📋 Step 3: Create Your First Release
 
 This triggers GitHub Actions to auto-build the Linux/Windows/macOS binaries:
 
@@ -57,26 +43,26 @@ In ~10 minutes, GitHub will:
 4. Create a GitHub Release with all artifacts attached
 
 You can watch the progress at:
-`https://github.com/YOUR_USERNAME/creatoragent/actions`
+`https://github.com/KdarshUchiha/creatoragent/actions`
 
-## 📋 Step 5: Share It!
+## 📋 Step 4: Share It!
 
 Once your release is published, anyone can install with:
 
 ### One-line install (Linux/Mac)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/creatoragent/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/KdarshUchiha/creatoragent/main/install.sh | bash
 ```
 
 ### Via pip
 ```bash
-pip install "creatoragent[all] @ git+https://github.com/YOUR_USERNAME/creatoragent.git"
+pip install "creatoragent[all] @ git+https://github.com/KdarshUchiha/creatoragent.git"
 ```
 
 ### Direct binary download
-Go to `https://github.com/YOUR_USERNAME/creatoragent/releases/latest`
+Go to `https://github.com/KdarshUchiha/creatoragent/releases/latest`
 
-## 🌟 Step 6: (Optional) Make It Official
+## 🌟 Step 5: (Optional) Make It Official
 
 Once you have some users:
 
@@ -92,7 +78,7 @@ twine upload dist/*
 ```bash
 # Create a separate repo: homebrew-tap
 # Add a Formula: creatoragent.rb
-# Now: brew install YOUR_USERNAME/tap/creatoragent
+# Now: brew install KdarshUchiha/tap/creatoragent
 ```
 
 ### Submit to Snap Store (Linux users)
@@ -128,7 +114,7 @@ git push origin v1.1.0
 - Check that workflow permissions allow writing (Settings → Actions → Workflow permissions → Read and write)
 
 **Release builds fail**
-- Check `https://github.com/YOUR_USERNAME/creatoragent/actions` for the error log
+- Check `https://github.com/KdarshUchiha/creatoragent/actions` for the error log
 - The most common issue is missing tag — make sure you tagged with `v` prefix (e.g. `v1.0.0`, not `1.0.0`)
 
 ---

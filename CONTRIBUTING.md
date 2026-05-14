@@ -4,7 +4,7 @@ Thanks for your interest in contributing! 🎉
 
 ## 🐛 Reporting Issues
 
-Open an [issue](https://github.com/YOUR_USERNAME/creatoragent/issues) with:
+Open an [issue](https://github.com/KdarshUchiha/creatoragent/issues) with:
 - What you expected to happen
 - What actually happened
 - Steps to reproduce

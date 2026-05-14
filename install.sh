@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # CreatorAgent universal installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/creatoragent/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/KdarshUchiha/creatoragent/main/install.sh | bash
 set -e
 
-REPO="YOUR_USERNAME/creatoragent"
+REPO="KdarshUchiha/creatoragent"
 VERSION="${CREATOR_VERSION:-latest}"
 
 # Detect platform
