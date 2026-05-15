@@ -1,0 +1,5 @@
+fastapi>=0.100
+uvicorn>=0.20
+google-genai>=1.0
+groq>=0.9
+anthropic>=0.40

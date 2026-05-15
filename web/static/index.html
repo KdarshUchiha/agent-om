@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Om">
+<meta name="description" content="Om — AI solution architect & builder">
+<link rel="manifest" href="/static/manifest.json">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+<title>ॐ Om</title>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
+    --text: #f1f5f9; --dim: #94a3b8; --accent: #38bdf8;
+    --green: #4ade80; --yellow: #fbbf24; --red: #f87171;
+    --purple: #a78bfa; --cyan: #22d3ee;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    height: 100dvh; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface); padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--surface2);
+    flex-shrink: 0; z-index: 10;
+  }
+  .header .logo { font-size: 24px; }
+  .header .title { font-size: 16px; font-weight: 700; flex: 1; }
+  .header .status {
+    font-size: 11px; color: var(--dim);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .header .status .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); display: inline-block;
+  }
+  .mode-select {
+    background: var(--surface2); color: var(--text);
+    border: none; border-radius: 8px; padding: 6px 10px;
+    font-size: 13px; cursor: pointer;
+  }
+
+  /* Chat area */
+  .chat { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 8px; }
+  .chat::-webkit-scrollbar { width: 4px; }
+  .chat::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 4px; }
+
+  .message { margin-bottom: 16px; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .message.user .bubble {
+    background: var(--accent); color: #0f172a;
+    margin-left: auto; border-radius: var(--radius) var(--radius) 4px var(--radius);
+    max-width: 85%;
+  }
+  .message.assistant .bubble {
+    background: var(--surface); border: 1px solid var(--surface2);
+    border-radius: var(--radius) var(--radius) var(--radius) 4px;
+    max-width: 92%;
+  }
+  .bubble { padding: 12px 16px; font-size: 14px; line-height: 1.6; word-wrap: break-word; }
+  .bubble code {
+    background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px;
+  }
+  .bubble pre {
+    background: #0d1117; padding: 12px; border-radius: 8px;
+    overflow-x: auto; margin: 8px 0; font-size: 12px; line-height: 1.5;
+  }
+  .bubble pre code { background: none; padding: 0; }
+
+  /* Tool events */
+  .tool-event {
+    background: var(--surface); border-left: 3px solid var(--purple);
+    padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0;
+    font-size: 12px;
+  }
+  .tool-event .tool-name { color: var(--purple); font-weight: 600; }
+  .tool-event .tool-result {
+    color: var(--dim); margin-top: 4px; font-family: monospace;
+    font-size: 11px; max-height: 100px; overflow-y: auto;
+    white-space: pre-wrap;
+  }
+
+  /* Thinking indicator */
+  .thinking {
+    display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+    color: var(--dim); font-size: 13px;
+  }
+  .thinking .dots span {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 1.4s infinite;
+  }
+  .thinking .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .thinking .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+  /* Input area */
+  .input-area {
+    background: var(--surface); padding: 12px 16px;
+    border-top: 1px solid var(--surface2);
+    flex-shrink: 0;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .input-row textarea {
+    flex: 1; background: var(--bg); color: var(--text);
+    border: 1px solid var(--surface2); border-radius: var(--radius);
+    padding: 12px 16px; font-size: 15px; resize: none;
+    font-family: inherit; line-height: 1.4;
+    min-height: 44px; max-height: 120px;
+    transition: border-color 0.2s;
+  }
+  .input-row textarea:focus { outline: none; border-color: var(--accent); }
+  .input-row textarea::placeholder { color: var(--dim); }
+  .send-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--accent); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: opacity 0.2s;
+  }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .send-btn svg { width: 20px; height: 20px; fill: #0f172a; }
+
+  /* Welcome */
+  .welcome { text-align: center; padding: 40px 20px; }
+  .welcome .om-symbol { font-size: 64px; margin-bottom: 16px; }
+  .welcome h2 { font-size: 20px; margin-bottom: 8px; }
+  .welcome p { color: var(--dim); font-size: 14px; line-height: 1.6; max-width: 400px; margin: 0 auto; }
+  .welcome .chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; margin-top: 20px;
+  }
+  .welcome .chip {
+    background: var(--surface2); color: var(--text); border: none;
+    padding: 8px 16px; border-radius: 20px; font-size: 13px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .welcome .chip:hover { background: var(--accent); color: #0f172a; }
+
+  /* Files panel */
+  .files-panel {
+    position: fixed; top: 0; right: -100%; width: 85%; max-width: 360px;
+    height: 100dvh; background: var(--surface); z-index: 20;
+    transition: right 0.3s ease; overflow-y: auto;
+    border-left: 1px solid var(--surface2); padding: 16px;
+  }
+  .files-panel.open { right: 0; }
+  .files-panel h3 { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .files-panel pre { font-size: 12px; color: var(--dim); white-space: pre-wrap; line-height: 1.8; }
+  .files-panel .close-btn {
+    background: var(--surface2); border: none; color: var(--text);
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px;
+  }
+  .overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 15; display: none;
+  }
+  .overlay.open { display: block; }
+
+  /* Markdown-ish rendering */
+  .bubble h1, .bubble h2, .bubble h3 { margin: 12px 0 6px; }
+  .bubble h1 { font-size: 18px; } .bubble h2 { font-size: 16px; } .bubble h3 { font-size: 14px; }
+  .bubble ul, .bubble ol { padding-left: 20px; margin: 6px 0; }
+  .bubble li { margin: 2px 0; }
+  .bubble strong { color: var(--accent); }
+  .bubble a { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo">ॐ</div>
+  <div class="title">Om</div>
+  <select class="mode-select" id="modeSelect">
+    <option value="architect">🏗️ Architect</option>
+    <option value="game">🎮 Game</option>
+    <option value="ai">🧠 AI/ML</option>
+    <option value="web">🌐 Web</option>
+    <option value="mobile">📱 Mobile</option>
+    <option value="systems">⚙️ Systems</option>
+    <option value="data">📊 Data</option>
+    <option value="devops">🔧 DevOps</option>
+  </select>
+  <button onclick="toggleFiles()" style="background:var(--surface2);border:none;color:var(--text);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:13px;">📁</button>
+  <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">loading...</span></div>
+</div>
+
+<!-- Chat -->
+<div class="chat" id="chat">
+  <div class="welcome" id="welcome">
+    <div class="om-symbol">ॐ</div>
+    <h2>Om — The Creator</h2>
+    <p>AI solution architect & builder.<br>Describe what you want to build.</p>
+    <div class="chips">
+      <button class="chip" onclick="sendQuick('Build a Snake game in Python')">🎮 Snake Game</button>
+      <button class="chip" onclick="sendQuick('Create a REST API with FastAPI')">🌐 REST API</button>
+      <button class="chip" onclick="sendQuick('Build a CLI todo app')">⚙️ Todo CLI</button>
+      <button class="chip" onclick="sendQuick('Design a chat app architecture')">🏗️ Chat Architecture</button>
+    </div>
+  </div>
+</div>
+
+<!-- Files panel -->
+<div class="overlay" id="overlay" onclick="toggleFiles()"></div>
+<div class="files-panel" id="filesPanel">
+  <h3>📁 Project Files <button class="close-btn" onclick="toggleFiles()">✕</button></h3>
+  <pre id="fileTree">Loading...</pre>
+</div>
+
+<!-- Input -->
+<div class="input-area">
+  <div class="input-row">
+    <textarea id="input" rows="1" placeholder="Describe what you want to build..."
+              onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+let sessionId = localStorage.getItem('om_session') || crypto.randomUUID();
+localStorage.setItem('om_session', sessionId);
+let isLoading = false;
+
+// Auto-resize textarea
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('sendBtn').disabled = !el.value.trim() || isLoading;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+// Fetch status
+async function fetchStatus() {
+  try {
+    const r = await fetch('/api/status');
+    const d = await r.json();
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    if (d.provider === 'demo') {
+      dot.style.background = 'var(--yellow)';
+      txt.textContent = 'demo';
+    } else {
+      dot.style.background = 'var(--green)';
+      txt.textContent = d.provider;
+    }
+  } catch(e) {
+    document.getElementById('statusDot').style.background = 'var(--red)';
+    document.getElementById('statusText').textContent = 'offline';
+  }
+}
+
+// Simple markdown renderer
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^\s*#{3}\s+(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^\s*#{2}\s+(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^\s*#{1}\s+(.+)$/gm, '<h1>$1</h1>')
+    .replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+    .replace(/\n/g, '<br>');
+}
+
+function addMessage(role, content) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.innerHTML = `<div class="bubble">${role === 'user' ? escapeHtml(content) : renderMarkdown(content)}</div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function addToolEvents(events) {
+  if (!events || !events.length) return;
+  const chat = document.getElementById('chat');
+  for (const ev of events) {
+    const div = document.createElement('div');
+    div.className = 'tool-event';
+    const argsStr = ev.tool === 'create_file' ? ev.args.path :
+                    ev.tool === 'run_command' ? ev.args.command :
+                    ev.tool === 'think' ? '(planning...)' :
+                    ev.tool === 'architect' ? ev.args.title :
+                    JSON.stringify(ev.args).substring(0, 80);
+    div.innerHTML = `<span class="tool-name">🔧 ${ev.tool}</span> <span style="color:var(--dim)">${escapeHtml(argsStr)}</span>
+      <div class="tool-result">${escapeHtml((ev.result || '').substring(0, 500))}</div>`;
+    chat.appendChild(div);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showThinking() {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'thinking';
+  div.id = 'thinkingIndicator';
+  div.innerHTML = '<div class="dots"><span></span><span></span><span></span></div> Om is working...';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function hideThinking() {
+  const el = document.getElementById('thinkingIndicator');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  input.value = '';
+  autoResize(input);
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', text);
+  showThinking();
+
+  try {
+    const r = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        session_id: sessionId,
+        mode: document.getElementById('modeSelect').value,
+      }),
+    });
+    const d = await r.json();
+    hideThinking();
+    if (d.tool_events && d.tool_events.length) addToolEvents(d.tool_events);
+    if (d.reply) addMessage('assistant', d.reply);
+    if (d.session_id) { sessionId = d.session_id; localStorage.setItem('om_session', sessionId); }
+  } catch(e) {
+    hideThinking();
+    addMessage('assistant', `Connection error: ${e.message}. Make sure the server is running.`);
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = !input.value.trim();
+  input.focus();
+}
+
+function sendQuick(text) {
+  document.getElementById('input').value = text;
+  sendMessage();
+}
+
+async function toggleFiles() {
+  const panel = document.getElementById('filesPanel');
+  const overlay = document.getElementById('overlay');
+  panel.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    try {
+      const r = await fetch('/api/files');
+      const d = await r.json();
+      document.getElementById('fileTree').textContent = d.tree || '(empty)';
+    } catch(e) { document.getElementById('fileTree').textContent = 'Error loading files'; }
+  }
+}
+
+// PWA service worker registration
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+}
+
+fetchStatus();
+document.getElementById('input').focus();
+</script>
+</body>
+</html>
