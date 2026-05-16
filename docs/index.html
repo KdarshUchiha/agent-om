@@ -162,40 +162,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
   <div class="chat" id="chat"></div>
 
-  <div class="modal-bg" id="setupModal"><div class="modal">
-    <h2>⚙️ Settings</h2>
-    <h3>👤 Account</h3><div id="accountInfo"></div>
-    <h3>🤖 AI Provider</h3>
-    <p>Your key is encrypted before cloud sync. Decrypted only in your browser.</p>
-    <label>Provider</label>
-    <select id="providerSelect" onchange="updateProviderUI()">
-      <option value="gemini">Google Gemini (FREE)</option><option value="groq">Groq (FREE)</option></select>
-    <div id="geminiSetup"><label>Gemini API Key</label>
-      <input type="password" id="geminiKey" placeholder="paste your key here">
-      <div class="note">Get free: <strong>aistudio.google.com</strong> → "Get API key" → Copy</div></div>
-    <div id="groqSetup" style="display:none"><label>Groq API Key</label>
-      <input type="password" id="groqKey" placeholder="paste your key here">
-      <div class="note">Get free: <strong>console.groq.com</strong> → "API Keys" → Copy</div></div>
-    <div id="currentKeyDisplay" style="display:none;margin-top:8px"><div class="note">Current key: <strong id="maskedKey"></strong></div></div>
-    <div class="btns"><button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSetup()">Save & Connect</button></div>
-    <h3>🔒 Security</h3>
-    <div class="sec-item"><span class="icon">✅</span><span class="label">API key encrypted (AES-GCM) before cloud storage</span></div>
-    <div class="sec-item"><span class="icon">✅</span><span class="label">Chat synced to your Firebase account only</span></div>
-    <div class="sec-item"><span class="icon">✅</span><span class="label">All AI calls direct to Gemini/Groq over HTTPS</span></div>
-    <div class="sec-item"><span class="icon">✅</span><span class="label">Open source: <a href="https://github.com/KdarshUchiha/agent-om" style="color:var(--cy)">github.com/KdarshUchiha/agent-om</a></span></div>
-    <h3>🗑️ Data</h3>
-    <div class="btns" style="margin-top:8px"><button class="btn btn-sm btn-secondary" onclick="exportAll()">📥 Export</button>
-      <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑️ Erase All</button></div>
-  </div></div>
-
-  <div class="modal-bg" id="sessionsModal"><div class="modal">
-    <h2>💬 Conversations</h2><p id="syncStatus"></p>
-    <div class="btns" style="margin-bottom:12px"><button class="btn btn-primary" onclick="newSession()">+ New Chat</button>
-      <button class="btn btn-secondary" onclick="closeSessions()">Close</button></div>
-    <div id="sessionList"></div>
-  </div></div>
-
   <div class="ia"><div class="ir">
     <textarea id="input" rows="1" placeholder="Describe what you want to build..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
     <button class="sb send-mode" id="sendBtn" onclick="toggleSendStop()" disabled>
@@ -204,6 +170,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     </button>
   </div></div>
 </div>
+
+<!-- Modals — outside #mainApp so overflow:hidden doesn't clip them -->
+<div class="modal-bg" id="setupModal"><div class="modal">
+  <h2>⚙️ Settings</h2>
+  <h3>👤 Account</h3><div id="accountInfo"></div>
+  <h3>🤖 AI Provider</h3>
+  <p>Your key is encrypted before cloud sync. Decrypted only in your browser.</p>
+  <label>Provider</label>
+  <select id="providerSelect" onchange="updateProviderUI()">
+    <option value="gemini">Google Gemini (FREE)</option><option value="groq">Groq (FREE)</option></select>
+  <div id="geminiSetup"><label>Gemini API Key</label>
+    <input type="password" id="geminiKey" placeholder="paste your key here">
+    <div class="note">Get free: <strong>aistudio.google.com</strong> → "Get API key" → Copy</div></div>
+  <div id="groqSetup" style="display:none"><label>Groq API Key</label>
+    <input type="password" id="groqKey" placeholder="paste your key here">
+    <div class="note">Get free: <strong>console.groq.com</strong> → "API Keys" → Copy</div></div>
+  <div id="currentKeyDisplay" style="display:none;margin-top:8px"><div class="note">Current key: <strong id="maskedKey"></strong></div></div>
+  <div class="btns"><button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveSetup()">Save & Connect</button></div>
+  <h3>🔒 Security</h3>
+  <div class="sec-item"><span class="icon">✅</span><span class="label">API key encrypted (AES-GCM) before cloud storage</span></div>
+  <div class="sec-item"><span class="icon">✅</span><span class="label">Chat synced to your Firebase account only</span></div>
+  <div class="sec-item"><span class="icon">✅</span><span class="label">All AI calls direct to Gemini/Groq over HTTPS</span></div>
+  <div class="sec-item"><span class="icon">✅</span><span class="label">Open source: <a href="https://github.com/KdarshUchiha/agent-om" style="color:var(--cy)">github.com/KdarshUchiha/agent-om</a></span></div>
+  <h3>🗑️ Data</h3>
+  <div class="btns" style="margin-top:8px"><button class="btn btn-sm btn-secondary" onclick="exportAll()">📥 Export</button>
+    <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑️ Erase All</button></div>
+</div></div>
+
+<div class="modal-bg" id="sessionsModal"><div class="modal">
+  <h2>💬 Conversations</h2><p id="syncStatus"></p>
+  <div class="btns" style="margin-bottom:12px"><button class="btn btn-primary" onclick="newSession()">+ New Chat</button>
+    <button class="btn btn-secondary" onclick="closeSessions()">Close</button></div>
+  <div id="sessionList"></div>
+</div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script type="module">
