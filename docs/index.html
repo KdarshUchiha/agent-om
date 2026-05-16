@@ -534,10 +534,8 @@ async function initApp(){
   const s=await loadApiKey();provider=s.provider;apiKey=s.key;
   if(provider&&apiKey){model=provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';setStatus(provider,'var(--gn)')}
   else{setStatus('tap ⚙️','var(--yl)')}
-  const sess=await loadAllSessions();
-  if(activeId&&sess[activeId])await loadSess(activeId);
-  else if(Object.keys(sess).length>0){const latest=Object.keys(sess).sort((a,b)=>(sess[b].updatedAt||0)-(sess[a].updatedAt||0))[0];await loadSess(latest)}
-  else await newSession();
+  // Always start with a fresh chat. Old sessions available via 💬.
+  await newSession();
   updateAccountUI();document.getElementById('input').focus()}
 
 if(firebaseEnabled){onAuthStateChanged(auth,async u=>{currentUser=u;
