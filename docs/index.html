@@ -426,8 +426,9 @@ window.signOutUser = async function(){
 };
 
 window.skipLogin = function(){
-  localStorage.setItem('om_skip_login','1');
+  sessionStorage.setItem('om_skip_login','1');
   showMainApp();
+  initApp();
 };
 
 function showLoginScreen(){
@@ -457,7 +458,7 @@ function updateAccountUI(){
       <button class="btn btn-sm btn-secondary" onclick="signOutUser()" style="margin-top:4px">Sign out</button>`;
   } else {
     avatar.style.display='none';
-    const skipped=localStorage.getItem('om_skip_login');
+    const skipped=sessionStorage.getItem('om_skip_login');
     container.innerHTML=skipped
       ? `<p style="font-size:13px">Using offline mode. <button class="btn btn-sm btn-primary" onclick="signInGoogle()" style="margin-left:8px">Sign in to sync</button></p>`
       : `<button class="btn btn-primary" onclick="signInGoogle()" style="width:100%">Sign in with Google to sync across devices</button>`;
@@ -685,12 +686,11 @@ if(firebaseEnabled){
   onAuthStateChanged(auth, async(user)=>{
     currentUser=user;
     if(user){
-      // Logged in — clear skip flag, show app
-      localStorage.removeItem('om_skip_login');
+      // Logged in — show app
       showMainApp();
       await initApp();
-    } else if(localStorage.getItem('om_skip_login')){
-      // Previously skipped — show app in offline mode
+    } else if(sessionStorage.getItem('om_skip_login')){
+      // Skipped for this session only — show app in offline mode
       showMainApp();
       await initApp();
     } else {
