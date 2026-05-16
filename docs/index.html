@@ -10,6 +10,8 @@
 <meta name="description" content="Om — Free AI solution architect & builder. Works on any phone.">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- Highlight.js for code syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
 <title>ॐ Om — AI Builder</title>
 <style>
 :root{--bg:#0f172a;--sf:#1e293b;--sf2:#334155;--tx:#f1f5f9;--dm:#94a3b8;
@@ -28,24 +30,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
 .chat{flex:1;overflow-y:auto;padding:14px;padding-bottom:8px}
 .chat::-webkit-scrollbar{width:3px}.chat::-webkit-scrollbar-thumb{background:var(--sf2);border-radius:3px}
-.msg{margin-bottom:14px;animation:fi .25s ease}
+.msg{margin-bottom:16px;animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.msg.user .bbl{background:var(--ac);color:#0f172a;margin-left:auto;border-radius:var(--r) var(--r) 4px var(--r);max-width:85%}
+.msg.user{display:flex;flex-direction:column;align-items:flex-end}
+.msg.assistant{display:flex;flex-direction:column;align-items:flex-start}
+.msg.user .bbl{background:var(--ac);color:#0f172a;border-radius:var(--r) var(--r) 4px var(--r);max-width:85%}
 .msg.assistant .bbl{background:var(--sf);border:1px solid var(--sf2);border-radius:var(--r) var(--r) var(--r) 4px;max-width:92%}
-.bbl{padding:10px 14px;font-size:13.5px;line-height:1.55;word-wrap:break-word}
-.bbl code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px;font-family:'SF Mono','Fira Code',monospace;font-size:12px}
-.bbl pre{background:#0d1117;padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:11.5px;line-height:1.45;position:relative}
-.bbl pre code{background:none;padding:0}.bbl strong{color:var(--ac)}.bbl a{color:var(--cy)}
-.bbl ul,.bbl ol{padding-left:18px;margin:4px 0}
-.copy-btn{position:absolute;top:4px;right:4px;background:var(--sf2);border:none;color:var(--dm);
-  padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;opacity:0;transition:opacity .2s}
-.bbl pre:hover .copy-btn{opacity:1}
+.bbl{padding:10px 14px;font-size:13.5px;line-height:1.6;word-wrap:break-word}
+.bbl code:not(pre code){background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px;font-family:'SF Mono','Fira Code',monospace;font-size:12px}
+.bbl pre{background:#0d1117;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-size:12px;line-height:1.5;position:relative}
+.bbl pre code{background:none!important;padding:0!important;font-family:'SF Mono','Fira Code',monospace;font-size:12px}
+.bbl strong{color:var(--ac)}.bbl em{color:var(--dm);font-style:italic}
+.bbl a{color:var(--cy);text-decoration:underline}
+.bbl ul,.bbl ol{padding-left:20px;margin:6px 0}.bbl li{margin:3px 0}
+.bbl blockquote{border-left:3px solid var(--ac);padding-left:12px;margin:8px 0;color:var(--dm)}
+.bbl table{border-collapse:collapse;margin:8px 0;font-size:12px;width:100%;overflow-x:auto;display:block}
+.bbl th,.bbl td{border:1px solid var(--sf2);padding:6px 10px;text-align:left}
+.bbl th{background:var(--sf2)}
+.bbl hr{border:none;border-top:1px solid var(--sf2);margin:12px 0}
+.bbl h1{font-size:18px;margin:14px 0 6px}.bbl h2{font-size:16px;margin:12px 0 4px}.bbl h3{font-size:14px;margin:10px 0 4px}
 
+/* Code block header */
+.code-header{display:flex;align-items:center;justify-content:space-between;background:#161b22;
+  padding:4px 12px;border-radius:8px 8px 0 0;font-size:11px;color:var(--dm)}
+.code-header+pre{border-radius:0 0 8px 8px;margin-top:0}
+.copy-btn{background:var(--sf2);border:none;color:var(--dm);padding:3px 10px;border-radius:4px;
+  font-size:11px;cursor:pointer;transition:all .2s}
+.copy-btn:hover{background:var(--ac);color:#0f172a}
+
+/* Message actions */
+.msg-actions{display:flex;gap:4px;margin-top:4px;opacity:0;transition:opacity .2s}
+.msg:hover .msg-actions{opacity:1}
+.msg-action{background:none;border:none;color:var(--dm);cursor:pointer;font-size:11px;padding:2px 6px;border-radius:4px}
+.msg-action:hover{background:var(--sf2);color:var(--tx)}
+
+/* Streaming cursor */
+.streaming-cursor::after{content:'▊';animation:blink 1s infinite;color:var(--ac)}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* Thinking */
 .thk{display:flex;align-items:center;gap:8px;padding:10px 14px;color:var(--dm);font-size:12px}
 .thk .dots span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;animation:pl 1.4s infinite}
 .thk .dots span:nth-child(2){animation-delay:.2s}.thk .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pl{0%,80%,100%{opacity:.3}40%{opacity:1}}
 
+/* Input area */
 .ia{background:var(--sf);padding:10px 14px;border-top:1px solid var(--sf2);flex-shrink:0;
   padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .ir{display:flex;gap:8px;align-items:flex-end}
@@ -53,10 +82,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   padding:10px 14px;font-size:14px;resize:none;font-family:inherit;line-height:1.4;min-height:42px;max-height:110px;transition:border-color .2s}
 .ir textarea:focus{outline:none;border-color:var(--ac)}
 .ir textarea::placeholder{color:var(--dm)}
-.sb{width:42px;height:42px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
-.sb:disabled{opacity:.4;cursor:not-allowed}.sb svg{width:18px;height:18px;fill:#0f172a}
+.sb{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sb.send-mode{background:var(--ac)}.sb.send-mode:disabled{opacity:.4;cursor:not-allowed}
+.sb.stop-mode{background:var(--rd)}
+.sb svg{width:18px;height:18px;fill:#0f172a}
 
+/* Welcome */
 .wc{text-align:center;padding:32px 16px}
 .wc .sym{font-size:56px;margin-bottom:12px}.wc h2{font-size:18px;margin-bottom:6px}
 .wc p{color:var(--dm);font-size:13px;line-height:1.5;max-width:380px;margin:0 auto}
@@ -64,6 +96,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .chip{background:var(--sf2);color:var(--tx);border:none;padding:7px 14px;border-radius:18px;font-size:12px;cursor:pointer;transition:background .2s}
 .chip:hover,.chip:active{background:var(--ac);color:#0f172a}
 
+/* Modals */
 .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:50;display:none;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:var(--sf);border-radius:16px;padding:24px;width:90%;max-width:420px;max-height:85dvh;overflow-y:auto}
@@ -83,629 +116,390 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .modal .btn-sm{padding:6px 12px;font-size:12px;flex:none}
 .btn-google{background:#fff;color:#333;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px}
 .btn-google:hover{background:#f0f0f0}
-
 .sess-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);
-  border-radius:8px;margin-bottom:6px;cursor:pointer;transition:background .2s;border:1px solid transparent}
-.sess-item:hover,.sess-item.active{border-color:var(--ac)}
-.sess-item.active{background:var(--sf2)}
+  border-radius:8px;margin-bottom:6px;cursor:pointer;border:1px solid transparent}
+.sess-item:hover,.sess-item.active{border-color:var(--ac)}.sess-item.active{background:var(--sf2)}
 .sess-item .sess-title{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sess-item .sess-date{font-size:10px;color:var(--dm);flex-shrink:0}
-.sess-item .sess-del{background:none;border:none;color:var(--rd);cursor:pointer;font-size:14px;padding:2px 6px;flex-shrink:0;opacity:0.5}
+.sess-item .sess-del{background:none;border:none;color:var(--rd);cursor:pointer;font-size:14px;padding:2px 6px;flex-shrink:0;opacity:.5}
 .sess-item .sess-del:hover{opacity:1}
-
 .sec-item{display:flex;gap:8px;margin-bottom:8px;font-size:12px;line-height:1.4}
 .sec-item .icon{flex-shrink:0;font-size:14px}.sec-item .label{color:var(--dm)}
 
-/* Login screen */
-.login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  flex:1;padding:32px;text-align:center}
-.login-screen .sym{font-size:72px;margin-bottom:16px}
-.login-screen h1{font-size:24px;margin-bottom:8px}
+.login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:32px;text-align:center}
+.login-screen .sym{font-size:72px;margin-bottom:16px}.login-screen h1{font-size:24px;margin-bottom:8px}
 .login-screen p{color:var(--dm);font-size:14px;margin-bottom:24px;max-width:340px;line-height:1.5}
 .login-screen .btn-google{padding:12px 32px;border-radius:12px;font-size:16px;cursor:pointer;border:none}
 .login-screen .skip{color:var(--dm);font-size:13px;margin-top:16px;cursor:pointer;text-decoration:underline;background:none;border:none}
 .login-screen .skip:hover{color:var(--tx)}
-
-/* User avatar */
 .user-avatar{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--sf2)}
-.sync-badge{font-size:10px;color:var(--gn);margin-left:2px}
 </style>
 </head>
 <body>
-
-<!-- Login Screen (shown when not logged in and not skipped) -->
 <div id="loginScreen" class="login-screen" style="display:none">
-  <div class="sym">ॐ</div>
-  <h1>Welcome to Om</h1>
+  <div class="sym">ॐ</div><h1>Welcome to Om</h1>
   <p>Sign in to sync your chats and API keys across all your devices. Or skip to use locally.</p>
   <button class="btn-google" onclick="signInGoogle()">
     <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    Sign in with Google
-  </button>
+    Sign in with Google</button>
   <button class="skip" onclick="skipLogin()">Continue without signing in</button>
 </div>
 
-<!-- Main App (hidden until login/skip) -->
 <div id="mainApp" style="display:none">
-
-  <!-- Header -->
   <div class="hd">
-    <div class="logo">ॐ</div>
-    <div class="tt">Om</div>
+    <div class="logo">ॐ</div><div class="tt">Om</div>
     <select class="sel" id="modeSelect" onchange="saveCurrentSession()">
-      <option value="architect">🏗️ Architect</option>
-      <option value="game">🎮 Game</option>
-      <option value="ai">🧠 AI/ML</option>
-      <option value="web">🌐 Web</option>
-      <option value="mobile">📱 Mobile</option>
-      <option value="systems">⚙️ Systems</option>
-      <option value="data">📊 Data</option>
-      <option value="devops">🔧 DevOps</option>
+      <option value="architect">🏗️ Architect</option><option value="game">🎮 Game</option>
+      <option value="ai">🧠 AI/ML</option><option value="web">🌐 Web</option>
+      <option value="mobile">📱 Mobile</option><option value="systems">⚙️ Systems</option>
+      <option value="data">📊 Data</option><option value="devops">🔧 DevOps</option>
     </select>
     <button class="ibtn" onclick="openSessions()">💬</button>
     <button class="ibtn" onclick="openSetup()">⚙️</button>
-    <img class="user-avatar" id="userAvatar" src="" onclick="openSetup()" style="display:none" title="Account">
+    <img class="user-avatar" id="userAvatar" src="" onclick="openSetup()" style="display:none">
     <div class="st"><span class="dot" id="dot" style="background:var(--yl)"></span><span id="stxt">setup</span></div>
   </div>
-
   <div class="chat" id="chat"></div>
 
-  <!-- Setup Modal -->
-  <div class="modal-bg" id="setupModal">
-    <div class="modal">
-      <h2>⚙️ Settings</h2>
+  <div class="modal-bg" id="setupModal"><div class="modal">
+    <h2>⚙️ Settings</h2>
+    <h3>👤 Account</h3><div id="accountInfo"></div>
+    <h3>🤖 AI Provider</h3>
+    <p>Your key is encrypted before cloud sync. Decrypted only in your browser.</p>
+    <label>Provider</label>
+    <select id="providerSelect" onchange="updateProviderUI()">
+      <option value="gemini">Google Gemini (FREE)</option><option value="groq">Groq (FREE)</option></select>
+    <div id="geminiSetup"><label>Gemini API Key</label>
+      <input type="password" id="geminiKey" placeholder="paste your key here">
+      <div class="note">Get free: <strong>aistudio.google.com</strong> → "Get API key" → Copy</div></div>
+    <div id="groqSetup" style="display:none"><label>Groq API Key</label>
+      <input type="password" id="groqKey" placeholder="paste your key here">
+      <div class="note">Get free: <strong>console.groq.com</strong> → "API Keys" → Copy</div></div>
+    <div id="currentKeyDisplay" style="display:none;margin-top:8px"><div class="note">Current key: <strong id="maskedKey"></strong></div></div>
+    <div class="btns"><button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSetup()">Save & Connect</button></div>
+    <h3>🔒 Security</h3>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">API key encrypted (AES-GCM) before cloud storage</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">Chat synced to your Firebase account only</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">All AI calls direct to Gemini/Groq over HTTPS</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">Open source: <a href="https://github.com/KdarshUchiha/agent-om" style="color:var(--cy)">github.com/KdarshUchiha/agent-om</a></span></div>
+    <h3>🗑️ Data</h3>
+    <div class="btns" style="margin-top:8px"><button class="btn btn-sm btn-secondary" onclick="exportAll()">📥 Export</button>
+      <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑️ Erase All</button></div>
+  </div></div>
 
-      <!-- Account section -->
-      <h3>👤 Account</h3>
-      <div id="accountInfo"></div>
+  <div class="modal-bg" id="sessionsModal"><div class="modal">
+    <h2>💬 Conversations</h2><p id="syncStatus"></p>
+    <div class="btns" style="margin-bottom:12px"><button class="btn btn-primary" onclick="newSession()">+ New Chat</button>
+      <button class="btn btn-secondary" onclick="closeSessions()">Close</button></div>
+    <div id="sessionList"></div>
+  </div></div>
 
-      <h3>🤖 AI Provider</h3>
-      <p>Your key is encrypted before cloud sync. It's decrypted only in your browser.</p>
-      <label>Provider</label>
-      <select id="providerSelect" onchange="updateProviderUI()">
-        <option value="gemini">Google Gemini (FREE)</option>
-        <option value="groq">Groq (FREE)</option>
-      </select>
-      <div id="geminiSetup">
-        <label>Gemini API Key</label>
-        <input type="password" id="geminiKey" placeholder="paste your key here">
-        <div class="note">Get free: <strong>aistudio.google.com</strong> → "Get API key" → Create → Copy</div>
-      </div>
-      <div id="groqSetup" style="display:none">
-        <label>Groq API Key</label>
-        <input type="password" id="groqKey" placeholder="paste your key here">
-        <div class="note">Get free: <strong>console.groq.com</strong> → "API Keys" → Create → Copy</div>
-      </div>
-      <div id="currentKeyDisplay" style="display:none;margin-top:8px">
-        <div class="note">Current key: <strong id="maskedKey"></strong></div>
-      </div>
-      <div class="btns">
-        <button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveSetup()">Save & Connect</button>
-      </div>
-
-      <h3>🔒 Security & Privacy</h3>
-      <div class="sec-item"><span class="icon">✅</span><span class="label">API key <strong>encrypted</strong> before cloud storage (AES-GCM, key derived from your user ID)</span></div>
-      <div class="sec-item"><span class="icon">✅</span><span class="label">Chat history synced to <strong>your Firebase account only</strong> — nobody else can read it</span></div>
-      <div class="sec-item"><span class="icon">✅</span><span class="label">All AI calls go <strong>directly</strong> to Gemini/Groq over HTTPS</span></div>
-      <div class="sec-item"><span class="icon">✅</span><span class="label">Open source: <a href="https://github.com/KdarshUchiha/agent-om" style="color:var(--cy)">github.com/KdarshUchiha/agent-om</a></span></div>
-      <div class="sec-item"><span class="icon">✅</span><span class="label">Offline mode: works without login using browser localStorage</span></div>
-
-      <h3>🗑️ Data Management</h3>
-      <div class="btns" style="margin-top:8px">
-        <button class="btn btn-sm btn-secondary" onclick="exportAll()">📥 Export</button>
-        <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑️ Erase All</button>
-      </div>
-      <div class="note" style="margin-top:6px">Export downloads all sessions as JSON. Erase deletes everything permanently.</div>
-    </div>
-  </div>
-
-  <!-- Sessions Modal -->
-  <div class="modal-bg" id="sessionsModal">
-    <div class="modal">
-      <h2>💬 Conversations</h2>
-      <p id="syncStatus"></p>
-      <div class="btns" style="margin-bottom:12px">
-        <button class="btn btn-primary" onclick="newSession()">+ New Chat</button>
-        <button class="btn btn-secondary" onclick="closeSessions()">Close</button>
-      </div>
-      <div id="sessionList"></div>
-    </div>
-  </div>
-
-  <!-- Input -->
-  <div class="ia">
-    <div class="ir">
-      <textarea id="input" rows="1" placeholder="Describe what you want to build..."
-                onkeydown="hk(event)" oninput="ar(this)"></textarea>
-      <button class="sb" id="sendBtn" onclick="send()" disabled>
-        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-  </div>
+  <div class="ia"><div class="ir">
+    <textarea id="input" rows="1" placeholder="Describe what you want to build..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
+    <button class="sb send-mode" id="sendBtn" onclick="toggleSendStop()" disabled>
+      <svg id="sendIcon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      <svg id="stopIcon" viewBox="0 0 24 24" style="display:none"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+    </button>
+  </div></div>
 </div>
 
-<!-- Firebase SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-import{getFirestore,doc,setDoc,getDoc,collection,getDocs,deleteDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import{getFirestore,doc,setDoc,getDoc,collection,getDocs,deleteDoc}from"https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
-// ══════════════════════════════════════════════════════════════════════════════
-// FIREBASE CONFIG
-// Replace with your own Firebase config after creating a project at console.firebase.google.com
-// ══════════════════════════════════════════════════════════════════════════════
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyCg2akeUDJwvrmEY7iSoJH2YmczD6J3O9Q",
-  authDomain: "om-agent-cea82.firebaseapp.com",
-  projectId: "om-agent-cea82",
-  storageBucket: "om-agent-cea82.firebasestorage.app",
-  messagingSenderId: "1057281154672",
-  appId: "1:1057281154672:web:e17e8f19b6821012ab9eb5"
-};
+const FIREBASE_CONFIG={apiKey:"AIzaSyCg2akeUDJwvrmEY7iSoJH2YmczD6J3O9Q",authDomain:"om-agent-cea82.firebaseapp.com",
+  projectId:"om-agent-cea82",storageBucket:"om-agent-cea82.firebasestorage.app",messagingSenderId:"1057281154672",
+  appId:"1:1057281154672:web:e17e8f19b6821012ab9eb5"};
+const firebaseEnabled=!FIREBASE_CONFIG.apiKey.includes('FIREBASE_');
+let fb,auth,db,currentUser=null;
+if(firebaseEnabled){fb=initializeApp(FIREBASE_CONFIG);auth=getAuth(fb);db=getFirestore(fb)}
 
-const firebaseEnabled = !FIREBASE_CONFIG.apiKey.includes('FIREBASE_');
-let fb, auth, db, currentUser = null;
+// Encryption
+async function deriveKey(uid){const e=new TextEncoder();const m=await crypto.subtle.importKey('raw',e.encode(uid+'_om_key_v1'),{name:'PBKDF2'},false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt:e.encode('om_salt_2025'),iterations:100000,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function encryptText(p,uid){const k=await deriveKey(uid);const iv=crypto.getRandomValues(new Uint8Array(12));const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(p));
+  const c=new Uint8Array(iv.length+ct.byteLength);c.set(iv);c.set(new Uint8Array(ct),iv.length);return btoa(String.fromCharCode(...c))}
+async function decryptText(b,uid){try{const k=await deriveKey(uid);const c=Uint8Array.from(atob(b),x=>x.charCodeAt(0));
+  return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:c.slice(0,12)},k,c.slice(12)))}catch(e){return''}}
 
-if(firebaseEnabled){
-  fb = initializeApp(FIREBASE_CONFIG);
-  auth = getAuth(fb);
-  db = getFirestore(fb);
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ENCRYPTION — AES-GCM for API key protection in Firestore
-// ══════════════════════════════════════════════════════════════════════════════
-async function deriveKey(uid){
-  const enc = new TextEncoder();
-  const material = await crypto.subtle.importKey('raw', enc.encode(uid + '_om_key_v1'),
-    {name:'PBKDF2'}, false, ['deriveKey']);
-  return crypto.subtle.deriveKey(
-    {name:'PBKDF2', salt:enc.encode('om_salt_2025'), iterations:100000, hash:'SHA-256'},
-    material, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
-}
-
-async function encryptText(plaintext, uid){
-  const key = await deriveKey(uid);
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encoded = new TextEncoder().encode(plaintext);
-  const ciphertext = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, encoded);
-  const combined = new Uint8Array(iv.length + ciphertext.byteLength);
-  combined.set(iv); combined.set(new Uint8Array(ciphertext), iv.length);
-  return btoa(String.fromCharCode(...combined));
-}
-
-async function decryptText(b64, uid){
-  try{
-    const key = await deriveKey(uid);
-    const combined = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
-    const iv = combined.slice(0,12);
-    const ciphertext = combined.slice(12);
-    const decrypted = await crypto.subtle.decrypt({name:'AES-GCM',iv}, key, ciphertext);
-    return new TextDecoder().decode(decrypted);
-  }catch(e){return '';}
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// STORAGE LAYER — Firebase (logged in) or localStorage (offline)
-// ══════════════════════════════════════════════════════════════════════════════
-const LS_SESSIONS = 'om_sessions';
-const LS_ACTIVE = 'om_active_session';
-
-function isCloudMode(){ return firebaseEnabled && currentUser; }
-
-// Sessions
+// Storage
+const LS_S='om_sessions',LS_A='om_active_session';
+function isCloud(){return firebaseEnabled&&currentUser}
 async function loadAllSessions(){
-  if(isCloudMode()){
-    try{
-      const snap = await getDocs(collection(db,'users',currentUser.uid,'sessions'));
-      const sessions = {};
-      snap.forEach(d => { sessions[d.id] = d.data(); });
-      return sessions;
-    }catch(e){ console.warn('Firestore read failed, using local', e); }
-  }
-  try{return JSON.parse(localStorage.getItem(LS_SESSIONS)||'{}');}catch(e){return {};}
-}
-
-async function saveSession(id, data){
-  // Always save locally
-  const local = JSON.parse(localStorage.getItem(LS_SESSIONS)||'{}');
-  local[id] = data;
-  try{localStorage.setItem(LS_SESSIONS, JSON.stringify(local));}catch(e){
-    // trim oldest
-    const keys=Object.keys(local).sort((a,b)=>(local[a].updatedAt||0)-(local[b].updatedAt||0));
-    while(keys.length>1){delete local[keys.shift()];
-      try{localStorage.setItem(LS_SESSIONS,JSON.stringify(local));break;}catch(e2){}}
-  }
-  // Also save to cloud if logged in
-  if(isCloudMode()){
-    try{await setDoc(doc(db,'users',currentUser.uid,'sessions',id), data);}catch(e){console.warn('Cloud save failed',e);}
-  }
-}
-
-async function deleteSessionStorage(id){
-  const local = JSON.parse(localStorage.getItem(LS_SESSIONS)||'{}');
-  delete local[id];
-  localStorage.setItem(LS_SESSIONS, JSON.stringify(local));
-  if(isCloudMode()){
-    try{await deleteDoc(doc(db,'users',currentUser.uid,'sessions',id));}catch(e){}
-  }
-}
-
-// API key
+  if(isCloud()){try{const s=await getDocs(collection(db,'users',currentUser.uid,'sessions'));const o={};s.forEach(d=>{o[d.id]=d.data()});return o}catch(e){}}
+  try{return JSON.parse(localStorage.getItem(LS_S)||'{}')}catch(e){return{}}}
+async function saveSess(id,data){
+  const l=JSON.parse(localStorage.getItem(LS_S)||'{}');l[id]=data;
+  try{localStorage.setItem(LS_S,JSON.stringify(l))}catch(e){const k=Object.keys(l).sort((a,b)=>(l[a].updatedAt||0)-(l[b].updatedAt||0));while(k.length>1){delete l[k.shift()];try{localStorage.setItem(LS_S,JSON.stringify(l));break}catch(e2){}}}
+  if(isCloud()){try{await setDoc(doc(db,'users',currentUser.uid,'sessions',id),data)}catch(e){}}}
+async function delSess(id){const l=JSON.parse(localStorage.getItem(LS_S)||'{}');delete l[id];localStorage.setItem(LS_S,JSON.stringify(l));
+  if(isCloud()){try{await deleteDoc(doc(db,'users',currentUser.uid,'sessions',id))}catch(e){}}}
 async function loadApiKey(){
-  if(isCloudMode()){
-    try{
-      const snap = await getDoc(doc(db,'users',currentUser.uid,'settings','apikey'));
-      if(snap.exists()){
-        const d = snap.data();
-        return { provider: d.provider, key: await decryptText(d.encryptedKey, currentUser.uid) };
-      }
-    }catch(e){console.warn('Cloud key load failed',e);}
-  }
-  return { provider: localStorage.getItem('om_provider')||'', key: localStorage.getItem('om_apikey')||'' };
-}
+  if(isCloud()){try{const s=await getDoc(doc(db,'users',currentUser.uid,'settings','apikey'));if(s.exists()){const d=s.data();return{provider:d.provider,key:await decryptText(d.encryptedKey,currentUser.uid)}}}catch(e){}}
+  return{provider:localStorage.getItem('om_provider')||'',key:localStorage.getItem('om_apikey')||''}}
+async function saveApiKey(p,k){localStorage.setItem('om_provider',p);localStorage.setItem('om_apikey',k);
+  if(isCloud()){try{await setDoc(doc(db,'users',currentUser.uid,'settings','apikey'),{provider:p,encryptedKey:await encryptText(k,currentUser.uid)})}catch(e){}}}
 
-async function saveApiKeyStorage(prov, key){
-  localStorage.setItem('om_provider', prov);
-  localStorage.setItem('om_apikey', key);
-  if(isCloudMode()){
-    try{
-      const encrypted = await encryptText(key, currentUser.uid);
-      await setDoc(doc(db,'users',currentUser.uid,'settings','apikey'), {provider:prov, encryptedKey:encrypted});
-    }catch(e){console.warn('Cloud key save failed',e);}
-  }
-}
+// State
+let provider='',apiKey='',model='',activeId=localStorage.getItem(LS_A)||'',history=[],loading=false,abortCtrl=null;
+const MODES={architect:'Focus on system design, scalability, trade-offs.',game:'Focus on ECS, game loops, rendering, physics, networking.',
+  ai:'Focus on transformers, RAG, agents, MLOps.',web:'Focus on React, Next.js, FastAPI, databases, auth.',
+  mobile:'Focus on Flutter, React Native, SwiftUI, Compose.',systems:'Focus on Rust, C++, concurrency, embedded.',
+  data:'Focus on Spark, Kafka, warehouses, pipelines.',devops:'Focus on Docker, K8s, Terraform, CI/CD, observability.'};
+const SYS=`You are Om — a world-class solution architect and builder.
+Rules: Write COMPLETE working code, never stubs. Use modern best practices. Wrap code in markdown code blocks with language tags. Break complex tasks into steps. Be concise but thorough.`;
 
-// ══════════════════════════════════════════════════════════════════════════════
-// APP STATE
-// ══════════════════════════════════════════════════════════════════════════════
-let provider='', apiKey='', model='';
-let activeSessionId = localStorage.getItem(LS_ACTIVE)||'';
-let history=[], loading=false;
-
-const MODES={
-  architect:'You are in Solution Architect mode. Focus on system design, scalability, trade-offs.',
-  game:'You are in Game Development mode. Focus on ECS, game loops, rendering, physics, networking.',
-  ai:'You are in AI/ML/Agents mode. Focus on transformers, RAG, agents, MLOps.',
-  web:'You are in Full-Stack Web mode. Focus on React, Next.js, FastAPI, databases, auth.',
-  mobile:'You are in Mobile mode. Focus on Flutter, React Native, SwiftUI, Compose.',
-  systems:'You are in Systems mode. Focus on Rust, C++, concurrency, memory, embedded.',
-  data:'You are in Data Engineering mode. Focus on Spark, Kafka, warehouses, pipelines.',
-  devops:'You are in DevOps mode. Focus on Docker, K8s, Terraform, CI/CD, observability.'
-};
-const SYS_PROMPT=`You are Om — a world-class solution architect and builder. You build production-grade software across every domain.
-
-Rules:
-- Write COMPLETE, working code. Never stubs or placeholders.
-- Use modern best practices.
-- Wrap code in markdown code blocks with the filename.
-- Break complex tasks into steps.
-- Provide runnable examples.
-- Be concise but thorough.`;
-
-// ══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════════════════════════
+// Helpers
 function esc(t){const d=document.createElement('div');d.appendChild(document.createTextNode(t));return d.innerHTML}
-function maskKey(k){if(!k||k.length<8)return'****';return k.slice(0,4)+'...'+k.slice(-4)}
-function generateId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function maskKey(k){return(!k||k.length<8)?'****':k.slice(0,4)+'...'+k.slice(-4)}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function setStatus(t,c){document.getElementById('dot').style.background=c;document.getElementById('stxt').textContent=t}
 
+// Markdown renderer — full featured
 function renderMd(raw){
   let t=esc(raw);
-  t=t.replace(/```(\w*)\n([\s\S]*?)```/g,(_,l,c)=>`<pre><button class="copy-btn" onclick="copyCode(this)">copy</button><code>${c}</code></pre>`);
+  // Code blocks with language + copy button + syntax highlighting
+  t=t.replace(/```(\w*)\n([\s\S]*?)```/g,(_,lang,code)=>{
+    const l=lang||'plaintext';
+    let highlighted;
+    try{highlighted=hljs.highlight(code,{language:l,ignoreIllegals:true}).value}catch(e){highlighted=code}
+    return`<div class="code-header"><span>${l}</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div><pre><code class="hljs">${highlighted}</code></pre>`});
+  // Tables
+  t=t.replace(/^\|(.+)\|\s*\n\|[\s\-:|]+\|\s*\n((?:\|.+\|\s*\n?)*)/gm,(_,header,body)=>{
+    const hCells=header.split('|').map(c=>c.trim()).filter(Boolean);
+    const rows=body.trim().split('\n').map(r=>r.split('|').map(c=>c.trim()).filter(Boolean));
+    return'<table><tr>'+hCells.map(c=>`<th>${c}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')+'</table>'});
   t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
   t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  t=t.replace(/^\s*&gt;\s+(.+)$/gm,'<blockquote>$1</blockquote>');
+  t=t.replace(/^\s*---\s*$/gm,'<hr>');
   t=t.replace(/^\s*#{3}\s+(.+)$/gm,'<h3>$1</h3>');
   t=t.replace(/^\s*#{2}\s+(.+)$/gm,'<h2>$1</h2>');
   t=t.replace(/^\s*#{1}\s+(.+)$/gm,'<h1>$1</h1>');
+  t=t.replace(/^\s*\d+\.\s+(.+)$/gm,'<li>$1</li>');
   t=t.replace(/^\s*[-*]\s+(.+)$/gm,'<li>$1</li>');
-  t=t.replace(/\n/g,'<br>');return t;
+  t=t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  t=t.replace(/\n/g,'<br>');
+  return t;
 }
-window.copyCode=function(btn){const c=btn.parentElement.querySelector('code').textContent;
+window.copyCode=function(btn){const c=btn.closest('.bbl').querySelector('pre code').textContent;
   navigator.clipboard.writeText(c).then(()=>{btn.textContent='copied!';setTimeout(()=>btn.textContent='copy',1500)})};
 
-// ══════════════════════════════════════════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════════════════════════════════════════
-window.signInGoogle = async function(){
-  if(!firebaseEnabled){alert('Firebase not configured. See docs/FIREBASE_SETUP.md');return}
-  try{
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    // Auth state listener handles the rest
-  }catch(e){
-    if(e.code!=='auth/popup-closed-by-user') alert('Sign in failed: '+e.message);
-  }
-};
+// Auth
+window.signInGoogle=async function(){if(!firebaseEnabled){alert('Firebase not configured');return}
+  try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(e.code!=='auth/popup-closed-by-user')alert('Sign in failed: '+e.message)}};
+window.signOutUser=async function(){if(auth)await signOut(auth);currentUser=null;updateAccountUI()};
+window.skipLogin=function(){sessionStorage.setItem('om_skip_login','1');showMainApp();initApp()};
 
-window.signOutUser = async function(){
-  if(auth) await signOut(auth);
-  currentUser=null;
-  updateAccountUI();
-};
-
-window.skipLogin = function(){
-  sessionStorage.setItem('om_skip_login','1');
-  showMainApp();
-  initApp();
-};
-
-function showLoginScreen(){
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('mainApp').style.display='none';
-  document.body.style.display='flex';
-}
-
-function showMainApp(){
-  document.getElementById('loginScreen').style.display='none';
-  const app=document.getElementById('mainApp');
-  app.style.display='flex';
-  app.style.flexDirection='column';
-  app.style.flex='1';
-}
+function showLoginScreen(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none'}
+function showMainApp(){document.getElementById('loginScreen').style.display='none';const a=document.getElementById('mainApp');a.style.display='flex';a.style.flexDirection='column';a.style.flex='1'}
 
 function updateAccountUI(){
-  const container=document.getElementById('accountInfo');
-  const avatar=document.getElementById('userAvatar');
-  if(currentUser){
-    avatar.src=currentUser.photoURL||'';avatar.style.display='block';avatar.title=currentUser.displayName||'Account';
-    container.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+  const c=document.getElementById('accountInfo'),av=document.getElementById('userAvatar');
+  if(currentUser){av.src=currentUser.photoURL||'';av.style.display='block';
+    c.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
       <img src="${esc(currentUser.photoURL||'')}" style="width:36px;height:36px;border-radius:50%">
       <div><div style="font-size:14px;font-weight:600">${esc(currentUser.displayName||'User')}</div>
       <div style="font-size:11px;color:var(--dm)">${esc(currentUser.email||'')}</div>
-      <div style="font-size:10px;color:var(--gn);margin-top:2px">☁️ Cloud sync active</div></div></div>
-      <button class="btn btn-sm btn-secondary" onclick="signOutUser()" style="margin-top:4px">Sign out</button>`;
-  } else {
-    avatar.style.display='none';
-    const skipped=sessionStorage.getItem('om_skip_login');
-    container.innerHTML=skipped
-      ? `<p style="font-size:13px">Using offline mode. <button class="btn btn-sm btn-primary" onclick="signInGoogle()" style="margin-left:8px">Sign in to sync</button></p>`
-      : `<button class="btn btn-primary" onclick="signInGoogle()" style="width:100%">Sign in with Google to sync across devices</button>`;
-  }
-}
+      <div style="font-size:10px;color:var(--gn)">☁️ Cloud sync active</div></div></div>
+      <button class="btn btn-sm btn-secondary" onclick="signOutUser()">Sign out</button>`}
+  else{av.style.display='none';const sk=sessionStorage.getItem('om_skip_login');
+    c.innerHTML=sk?`<p style="font-size:13px">Offline mode <button class="btn btn-sm btn-primary" onclick="signInGoogle()" style="margin-left:8px">Sign in</button></p>`
+      :`<button class="btn btn-primary" onclick="signInGoogle()" style="width:100%">Sign in with Google</button>`}}
 
-// ══════════════════════════════════════════════════════════════════════════════
-// SESSION MANAGEMENT
-// ══════════════════════════════════════════════════════════════════════════════
-window.newSession = async function(){
-  const id=generateId();
-  const data={id,title:'New chat',messages:[],mode:'architect',createdAt:Date.now(),updatedAt:Date.now()};
-  await saveSession(id,data);
-  await loadSessionById(id);
-  closeSessions();
-};
+// Sessions
+window.newSession=async function(){const id=genId();await saveSess(id,{id,title:'New chat',messages:[],mode:'architect',createdAt:Date.now(),updatedAt:Date.now()});await loadSess(id);closeSessions()};
+async function loadSess(id){await window.saveCurrentSession();const s=await loadAllSessions();const sess=s[id];if(!sess)return;
+  activeId=id;localStorage.setItem(LS_A,id);history=sess.messages||[];
+  if(sess.mode&&MODES[sess.mode])document.getElementById('modeSelect').value=sess.mode;renderChat()}
+window.loadSession=function(id){loadSess(id)};
 
-async function loadSessionById(id){
-  await saveCurrentSession();
-  const sessions=await loadAllSessions();
-  const sess=sessions[id];if(!sess)return;
-  activeSessionId=id;localStorage.setItem(LS_ACTIVE,id);
-  history=sess.messages||[];
-  if(sess.mode&&MODES[sess.mode])document.getElementById('modeSelect').value=sess.mode;
-  renderChat();
-}
-window.loadSession=function(id){loadSessionById(id)};
+window.saveCurrentSession=async function(){if(!activeId)return;const s=await loadAllSessions();if(!s[activeId])return;
+  s[activeId].messages=history;s[activeId].mode=document.getElementById('modeSelect').value;s[activeId].updatedAt=Date.now();
+  if(s[activeId].title==='New chat'&&history.length>0){const f=history.find(m=>m.role==='user');if(f)s[activeId].title=f.content.slice(0,50)}
+  await saveSess(activeId,s[activeId])};
 
-window.saveCurrentSession = async function(){
-  if(!activeSessionId)return;
-  const sessions=await loadAllSessions();
-  if(!sessions[activeSessionId])return;
-  sessions[activeSessionId].messages=history;
-  sessions[activeSessionId].mode=document.getElementById('modeSelect').value;
-  sessions[activeSessionId].updatedAt=Date.now();
-  if(sessions[activeSessionId].title==='New chat'&&history.length>0){
-    const first=history.find(m=>m.role==='user');
-    if(first)sessions[activeSessionId].title=first.content.slice(0,50);
-  }
-  await saveSession(activeSessionId,sessions[activeSessionId]);
-};
+window.deleteSession=async function(id,evt){evt.stopPropagation();if(!confirm('Delete this conversation?'))return;
+  await delSess(id);if(id===activeId){const r=Object.keys(await loadAllSessions());if(r.length>0)await loadSess(r[0]);else await newSession()}await renderSessList()};
 
-window.deleteSession = async function(id,evt){
-  evt.stopPropagation();if(!confirm('Delete this conversation?'))return;
-  await deleteSessionStorage(id);
-  if(id===activeSessionId){
-    const remaining=Object.keys(await loadAllSessions());
-    if(remaining.length>0)await loadSessionById(remaining[0]);else await newSession();
-  }
-  await renderSessionList();
-};
+async function renderSessList(){
+  const s=await loadAllSessions(),list=document.getElementById('sessionList'),sorted=Object.values(s).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  document.getElementById('syncStatus').innerHTML=isCloud()?'<span style="color:var(--gn)">☁️ Synced</span>':'<span style="color:var(--dm)">💾 Local</span>';
+  if(!sorted.length){list.innerHTML='<p style="color:var(--dm);text-align:center">No conversations</p>';return}
+  const ic={architect:'🏗️',game:'🎮',ai:'🧠',web:'🌐',mobile:'📱',systems:'⚙️',data:'📊',devops:'🔧'};
+  list.innerHTML=sorted.map(s=>{const d=new Date(s.updatedAt||s.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+    const mc=(s.messages||[]).length,act=s.id===activeId?' active':'';
+    return`<div class="sess-item${act}" onclick="loadSession('${esc(s.id)}');closeSessions()">
+      <span>${ic[s.mode]||'🏗️'}</span><span class="sess-title">${esc(s.title||'New chat')}</span>
+      <span class="sess-date">${mc} · ${d}</span><button class="sess-del" onclick="deleteSession('${esc(s.id)}',event)">✕</button></div>`}).join('')}
 
-async function renderSessionList(){
-  const sessions=await loadAllSessions();
-  const list=document.getElementById('sessionList');
-  const sorted=Object.values(sessions).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
-  const syncLabel=document.getElementById('syncStatus');
-  syncLabel.innerHTML=isCloudMode()?'<span style="color:var(--gn)">☁️ Synced to cloud</span>':'<span style="color:var(--dm)">💾 Saved locally</span>';
-  if(!sorted.length){list.innerHTML='<p style="color:var(--dm);font-size:13px;text-align:center">No conversations yet</p>';return}
-  const icons={architect:'🏗️',game:'🎮',ai:'🧠',web:'🌐',mobile:'📱',systems:'⚙️',data:'📊',devops:'🔧'};
-  list.innerHTML=sorted.map(s=>{
-    const date=new Date(s.updatedAt||s.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric'});
-    const mc=(s.messages||[]).length;const active=s.id===activeSessionId?' active':'';
-    return`<div class="sess-item${active}" onclick="loadSession('${esc(s.id)}');closeSessions()">
-      <span>${icons[s.mode]||'🏗️'}</span><span class="sess-title">${esc(s.title||'New chat')}</span>
-      <span class="sess-date">${mc} msgs · ${date}</span>
-      <button class="sess-del" onclick="deleteSession('${esc(s.id)}',event)" title="Delete">✕</button></div>`}).join('');
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// CHAT RENDERING
-// ══════════════════════════════════════════════════════════════════════════════
+// Chat rendering
 function renderChat(){
   const chat=document.getElementById('chat');chat.innerHTML='';
-  if(!history.length){
-    chat.innerHTML=`<div class="wc"><div class="sym">ॐ</div><h2>Om — The Creator</h2>
-      <p>Free AI solution architect &amp; builder.<br>Works on any phone, any browser.</p>
-      <div class="chips">
-        <button class="chip" onclick="sendQ('Build a Snake game in Python with pygame')">🎮 Snake Game</button>
-        <button class="chip" onclick="sendQ('Create a REST API with Flask')">🌐 REST API</button>
-        <button class="chip" onclick="sendQ('Build a personal portfolio website')">🎨 Portfolio</button>
-        <button class="chip" onclick="sendQ('Design a microservice architecture for e-commerce')">🏗️ Microservice</button>
-        <button class="chip" onclick="sendQ('Create a RAG chatbot using Python')">🧠 RAG Chatbot</button>
-        <button class="chip" onclick="sendQ('Build a real-time chat app with WebSockets')">💬 Chat App</button>
-      </div><p style="margin-top:20px;font-size:12px">Tap ⚙️ to set up a <strong>free</strong> API key</p></div>`;return;
-  }
-  for(const msg of history){const d=document.createElement('div');d.className=`msg ${msg.role}`;
-    d.innerHTML=`<div class="bbl">${msg.role==='user'?esc(msg.content).replace(/\n/g,'<br>'):renderMd(msg.content)}</div>`;
-    chat.appendChild(d);}
-  chat.scrollTop=chat.scrollHeight;
-}
+  if(!history.length){chat.innerHTML=`<div class="wc"><div class="sym">ॐ</div><h2>Om — The Creator</h2>
+    <p>Free AI solution architect &amp; builder.<br>Works on any phone, any browser.</p>
+    <div class="chips">
+      <button class="chip" onclick="sendQ('Build a Snake game in Python with pygame')">🎮 Snake Game</button>
+      <button class="chip" onclick="sendQ('Create a REST API with Flask')">🌐 REST API</button>
+      <button class="chip" onclick="sendQ('Build a portfolio website with HTML/CSS/JS')">🎨 Portfolio</button>
+      <button class="chip" onclick="sendQ('Design microservice architecture for e-commerce')">🏗️ Microservice</button>
+      <button class="chip" onclick="sendQ('Create a RAG chatbot using Python')">🧠 RAG Chatbot</button>
+      <button class="chip" onclick="sendQ('Build a real-time chat app')">💬 Chat App</button>
+    </div><p style="margin-top:20px;font-size:12px">Tap ⚙️ to set up a <strong>free</strong> API key</p></div>`;return}
+  history.forEach((msg,i)=>{
+    const d=document.createElement('div');d.className=`msg ${msg.role}`;
+    const bbl=`<div class="bbl">${msg.role==='user'?esc(msg.content).replace(/\n/g,'<br>'):renderMd(msg.content)}</div>`;
+    let actions='';
+    if(msg.role==='user'){actions=`<div class="msg-actions"><button class="msg-action" onclick="editMsg(${i})">✏️ edit</button></div>`}
+    else{actions=`<div class="msg-actions"><button class="msg-action" onclick="copyMsg(${i})">📋 copy</button><button class="msg-action" onclick="retryMsg(${i})">🔄 retry</button></div>`}
+    d.innerHTML=bbl+actions;chat.appendChild(d)});
+  chat.scrollTop=chat.scrollHeight}
 
-function addMsgToUI(role,content){
+function addMsgUI(role,content,streaming=false){
   const chat=document.getElementById('chat');const wc=chat.querySelector('.wc');if(wc)wc.remove();
-  const d=document.createElement('div');d.className=`msg ${role}`;
-  d.innerHTML=`<div class="bbl">${role==='user'?esc(content).replace(/\n/g,'<br>'):renderMd(content)}</div>`;
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
-}
+  const d=document.createElement('div');d.className=`msg ${role}`;d.id=streaming?'streaming-msg':'';
+  d.innerHTML=`<div class="bbl${streaming?' streaming-cursor':''}">${role==='user'?esc(content).replace(/\n/g,'<br>'):renderMd(content)}</div>`;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+
+function updateStreamingMsg(text){
+  const el=document.getElementById('streaming-msg');if(!el)return;
+  el.querySelector('.bbl').innerHTML=renderMd(text);
+  document.getElementById('chat').scrollTop=document.getElementById('chat').scrollHeight}
+
+function finalizeStreamingMsg(idx){
+  const el=document.getElementById('streaming-msg');if(!el)return;
+  el.id='';const bbl=el.querySelector('.bbl');bbl.classList.remove('streaming-cursor');
+  bbl.innerHTML=renderMd(history[idx].content);
+  el.innerHTML+=`<div class="msg-actions"><button class="msg-action" onclick="copyMsg(${idx})">📋 copy</button><button class="msg-action" onclick="retryMsg(${idx})">🔄 retry</button></div>`}
 
 function showThinking(){const c=document.getElementById('chat');const d=document.createElement('div');d.className='thk';d.id='thk';
   d.innerHTML='<div class="dots"><span></span><span></span><span></span></div> Om is thinking...';c.appendChild(d);c.scrollTop=c.scrollHeight}
 function hideThinking(){const e=document.getElementById('thk');if(e)e.remove()}
 
-window.ar=function(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';
-  document.getElementById('sendBtn').disabled=!el.value.trim()||loading};
-window.hk=function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+// Message actions
+window.copyMsg=function(i){navigator.clipboard.writeText(history[i].content)};
+window.editMsg=function(i){
+  const msg=history[i];if(msg.role!=='user')return;
+  history=history.slice(0,i);renderChat();
+  document.getElementById('input').value=msg.content;ar(document.getElementById('input'))};
+window.retryMsg=function(i){
+  if(i<1)return;history=history.slice(0,i);renderChat();
+  send()};
 
-// ══════════════════════════════════════════════════════════════════════════════
-// API CALLS
-// ══════════════════════════════════════════════════════════════════════════════
-async function callGemini(messages){
+// Input
+window.ar=function(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';
+  document.getElementById('sendBtn').disabled=!el.value.trim()&&!loading};
+window.hk=function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();toggleSendStop()}};
+
+function setSendMode(){const b=document.getElementById('sendBtn');b.classList.remove('stop-mode');b.classList.add('send-mode');
+  document.getElementById('sendIcon').style.display='';document.getElementById('stopIcon').style.display='none';
+  b.disabled=!document.getElementById('input').value.trim()}
+function setStopMode(){const b=document.getElementById('sendBtn');b.classList.remove('send-mode');b.classList.add('stop-mode');
+  document.getElementById('sendIcon').style.display='none';document.getElementById('stopIcon').style.display='';b.disabled=false}
+
+window.toggleSendStop=function(){if(loading){if(abortCtrl){abortCtrl.abort();abortCtrl=null}}else{send()}};
+
+// Streaming API calls
+async function callGeminiStream(messages,signal){
   const mode=document.getElementById('modeSelect').value;
   const contents=messages.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system_instruction:{parts:[{text:SYS_PROMPT+'\n\n'+MODES[mode]}]},contents,generationConfig:{temperature:0.7,maxOutputTokens:8192}})});
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},signal,
+    body:JSON.stringify({system_instruction:{parts:[{text:SYS+'\n\n'+MODES[mode]}]},contents,generationConfig:{temperature:0.7,maxOutputTokens:8192}})});
   if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`API error: ${r.status}`)}
-  const d=await r.json();if(!d.candidates||!d.candidates[0])throw new Error('No response');
-  return d.candidates[0].content.parts.map(p=>p.text).join('');
-}
+  return r.body}
 
-async function callGroq(messages){
+async function callGroqStream(messages,signal){
   const mode=document.getElementById('modeSelect').value;
-  const msgs=[{role:'system',content:SYS_PROMPT+'\n\n'+MODES[mode]},...messages];
+  const msgs=[{role:'system',content:SYS+'\n\n'+MODES[mode]},...messages];
   const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-    method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-    body:JSON.stringify({model,messages:msgs,temperature:0.7,max_tokens:8192})});
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},signal,
+    body:JSON.stringify({model,messages:msgs,temperature:0.7,max_tokens:8192,stream:true})});
   if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`API error: ${r.status}`)}
-  const d=await r.json();return d.choices[0].message.content;
-}
+  return r.body}
 
-// ══════════════════════════════════════════════════════════════════════════════
-// SEND
-// ══════════════════════════════════════════════════════════════════════════════
-window.send = async function(){
+async function processStream(stream,onChunk){
+  const reader=stream.getReader();const decoder=new TextDecoder();let buffer='';
+  while(true){const{done,value}=await reader.read();if(done)break;
+    buffer+=decoder.decode(value,{stream:true});
+    const lines=buffer.split('\n');buffer=lines.pop()||'';
+    for(const line of lines){
+      if(!line.startsWith('data: ')||line==='data: [DONE]')continue;
+      try{const data=JSON.parse(line.slice(6));onChunk(data)}catch(e){}}}}
+
+// Send
+async function send(){
   const inp=document.getElementById('input');const text=inp.value.trim();
-  if(!text||loading)return;if(!provider||!apiKey){openSetup();return}
-  inp.value='';ar(inp);loading=true;document.getElementById('sendBtn').disabled=true;
-  addMsgToUI('user',text);history.push({role:'user',content:text});
-  await saveCurrentSession();showThinking();
+  if(!text&&!loading)return;if(!provider||!apiKey){openSetup();return}
+  if(text){inp.value='';window.ar(inp);addMsgUI('user',text);history.push({role:'user',content:text});await window.saveCurrentSession()}
+  loading=true;setStopMode();abortCtrl=new AbortController();
+  showThinking();let fullReply='';
   try{
-    let reply;
-    if(provider==='gemini')reply=await callGemini(history);
-    else if(provider==='groq')reply=await callGroq(history);
-    else throw new Error('No provider');
-    hideThinking();addMsgToUI('assistant',reply);history.push({role:'assistant',content:reply});
+    let stream;
+    if(provider==='gemini')stream=await callGeminiStream(history,abortCtrl.signal);
+    else stream=await callGroqStream(history,abortCtrl.signal);
+    hideThinking();addMsgUI('assistant','',true);
+    await processStream(stream,(data)=>{
+      let chunk='';
+      if(provider==='gemini'){if(data.candidates?.[0]?.content?.parts)chunk=data.candidates[0].content.parts.map(p=>p.text||'').join('')}
+      else{if(data.choices?.[0]?.delta?.content)chunk=data.choices[0].delta.content}
+      if(chunk){fullReply+=chunk;updateStreamingMsg(fullReply)}});
+    history.push({role:'assistant',content:fullReply});
+    finalizeStreamingMsg(history.length-1);
     if(history.length>80)history=history.slice(-40);
-    await saveCurrentSession();
-  }catch(e){hideThinking();const errMsg=`**Error:** ${e.message}\n\nCheck your API key in ⚙️ settings.`;
-    addMsgToUI('assistant',errMsg);history.push({role:'assistant',content:errMsg});await saveCurrentSession();}
-  loading=false;document.getElementById('sendBtn').disabled=!inp.value.trim();inp.focus();
-};
+    await window.saveCurrentSession();
+  }catch(e){hideThinking();
+    const el=document.getElementById('streaming-msg');if(el)el.remove();
+    if(e.name==='AbortError'){if(fullReply){history.push({role:'assistant',content:fullReply+'...\n\n*[stopped by user]*'});renderChat();await window.saveCurrentSession()}}
+    else{const errMsg=`**Error:** ${e.message}\n\nCheck your API key in ⚙️.`;addMsgUI('assistant',errMsg);history.push({role:'assistant',content:errMsg});await window.saveCurrentSession()}}
+  loading=false;abortCtrl=null;setSendMode();inp.focus()}
+window.send=send;
 window.sendQ=function(t){if(!provider||!apiKey){openSetup();return}document.getElementById('input').value=t;send()};
 
-// ══════════════════════════════════════════════════════════════════════════════
-// MODALS
-// ══════════════════════════════════════════════════════════════════════════════
+// Modals
 window.openSetup=function(){document.getElementById('setupModal').classList.add('open');
   if(provider)document.getElementById('providerSelect').value=provider;updateProviderUI();updateAccountUI();
-  const disp=document.getElementById('currentKeyDisplay');
-  if(apiKey){disp.style.display='block';document.getElementById('maskedKey').textContent=maskKey(apiKey);}else{disp.style.display='none';}};
+  const d=document.getElementById('currentKeyDisplay');if(apiKey){d.style.display='block';document.getElementById('maskedKey').textContent=maskKey(apiKey)}else{d.style.display='none'}};
 window.closeSetup=function(){document.getElementById('setupModal').classList.remove('open')};
 window.updateProviderUI=function(){const p=document.getElementById('providerSelect').value;
   document.getElementById('geminiSetup').style.display=p==='gemini'?'block':'none';
   document.getElementById('groqSetup').style.display=p==='groq'?'block':'none'};
-
-window.saveSetup=async function(){
-  const p=document.getElementById('providerSelect').value;
+window.saveSetup=async function(){const p=document.getElementById('providerSelect').value;
   const k=p==='gemini'?document.getElementById('geminiKey').value.trim():document.getElementById('groqKey').value.trim();
-  if(!k&&!apiKey){alert('Please enter an API key');return}
-  provider=p;if(k)apiKey=k;
+  if(!k&&!apiKey){alert('Enter API key');return}provider=p;if(k)apiKey=k;
   model=p==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';
-  await saveApiKeyStorage(p,apiKey);
-  setStatus(p,'var(--gn)');closeSetup();
-  document.getElementById('geminiKey').value='';document.getElementById('groqKey').value='';
-};
-
-window.openSessions=async function(){document.getElementById('sessionsModal').classList.add('open');await renderSessionList()};
+  await saveApiKey(p,apiKey);setStatus(p,'var(--gn)');closeSetup();
+  document.getElementById('geminiKey').value='';document.getElementById('groqKey').value=''};
+window.openSessions=async function(){document.getElementById('sessionsModal').classList.add('open');await renderSessList()};
 window.closeSessions=function(){document.getElementById('sessionsModal').classList.remove('open')};
+window.exportAll=function(){const d={exportedAt:new Date().toISOString(),sessions:JSON.parse(localStorage.getItem(LS_S)||'{}')};
+  const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download=`om-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u)};
+window.clearAll=async function(){if(!confirm('Delete everything permanently?'))return;if(!confirm('Cannot be undone. Continue?'))return;
+  localStorage.removeItem(LS_S);localStorage.removeItem(LS_A);localStorage.removeItem('om_provider');localStorage.removeItem('om_apikey');
+  if(isCloud()){try{const s=await getDocs(collection(db,'users',currentUser.uid,'sessions'));for(const d of s.docs)await deleteDoc(d.ref);
+    await deleteDoc(doc(db,'users',currentUser.uid,'settings','apikey'))}catch(e){}}
+  provider='';apiKey='';history=[];activeId='';setStatus('tap ⚙️','var(--yl)');await newSession();renderChat();closeSetup()};
 
-window.exportAll=function(){
-  const data={exportedAt:new Date().toISOString(),provider,sessions:JSON.parse(localStorage.getItem(LS_SESSIONS)||'{}')};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;
-  a.download=`om-export-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url)};
-
-window.clearAll=async function(){
-  if(!confirm('Delete API key + ALL chat history permanently?'))return;
-  if(!confirm('This cannot be undone. Continue?'))return;
-  localStorage.removeItem(LS_SESSIONS);localStorage.removeItem(LS_ACTIVE);
-  localStorage.removeItem('om_provider');localStorage.removeItem('om_apikey');
-  if(isCloudMode()){
-    try{const snap=await getDocs(collection(db,'users',currentUser.uid,'sessions'));
-      for(const d of snap.docs)await deleteDoc(d.ref);
-      await deleteDoc(doc(db,'users',currentUser.uid,'settings','apikey'));
-    }catch(e){}
-  }
-  provider='';apiKey='';history=[];activeSessionId='';
-  setStatus('tap ⚙️','var(--yl)');await newSession();renderChat();closeSetup();
-};
-
-// ══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════════════════
+// Init
 async function initApp(){
-  // Load API key
-  const saved=await loadApiKey();
-  provider=saved.provider;apiKey=saved.key;
-  if(provider&&apiKey){model=provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';setStatus(provider,'var(--gn)');}
-  else{setStatus('tap ⚙️','var(--yl)');}
+  const s=await loadApiKey();provider=s.provider;apiKey=s.key;
+  if(provider&&apiKey){model=provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';setStatus(provider,'var(--gn)')}
+  else{setStatus('tap ⚙️','var(--yl)')}
+  const sess=await loadAllSessions();
+  if(activeId&&sess[activeId])await loadSess(activeId);
+  else if(Object.keys(sess).length>0){const latest=Object.keys(sess).sort((a,b)=>(sess[b].updatedAt||0)-(sess[a].updatedAt||0))[0];await loadSess(latest)}
+  else await newSession();
+  updateAccountUI();document.getElementById('input').focus()}
 
-  // Load sessions
-  const sessions=await loadAllSessions();
-  if(activeSessionId&&sessions[activeSessionId]){await loadSessionById(activeSessionId);}
-  else if(Object.keys(sessions).length>0){
-    const latest=Object.keys(sessions).sort((a,b)=>(sessions[b].updatedAt||0)-(sessions[a].updatedAt||0))[0];
-    await loadSessionById(latest);
-  }else{await newSession();}
-  updateAccountUI();
-  document.getElementById('input').focus();
-}
-
-// Auth state listener
-if(firebaseEnabled){
-  onAuthStateChanged(auth, async(user)=>{
-    currentUser=user;
-    if(user){
-      // Logged in — show app
-      showMainApp();
-      await initApp();
-    } else if(sessionStorage.getItem('om_skip_login')){
-      // Skipped for this session only — show app in offline mode
-      showMainApp();
-      await initApp();
-    } else {
-      // First visit or logged out — show login screen
-      showLoginScreen();
-    }
-  });
-} else {
-  // No Firebase config — always show main app with localStorage only
-  showMainApp();
-  initApp();
-}
-
-window.addEventListener('beforeunload',()=>saveCurrentSession());
-
+if(firebaseEnabled){onAuthStateChanged(auth,async u=>{currentUser=u;
+  if(u){showMainApp();await initApp()}else if(sessionStorage.getItem('om_skip_login')){showMainApp();await initApp()}else showLoginScreen()})}
+else{showMainApp();initApp()}
+window.addEventListener('beforeunload',()=>window.saveCurrentSession());
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
