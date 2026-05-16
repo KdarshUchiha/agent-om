@@ -21,8 +21,7 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   background:var(--bg);color:var(--tx);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 
-/* Header */
-.hd{background:var(--sf);padding:10px 14px;display:flex;align-items:center;gap:10px;
+.hd{background:var(--sf);padding:10px 14px;display:flex;align-items:center;gap:8px;
   border-bottom:1px solid var(--sf2);flex-shrink:0;z-index:10}
 .hd .logo{font-size:22px}
 .hd .tt{font-size:15px;font-weight:700;flex:1}
@@ -31,7 +30,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .sel{background:var(--sf2);color:var(--tx);border:none;border-radius:8px;padding:5px 8px;font-size:12px}
 .ibtn{background:var(--sf2);border:none;color:var(--tx);padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12px}
 
-/* Chat */
 .chat{flex:1;overflow-y:auto;padding:14px;padding-bottom:8px}
 .chat::-webkit-scrollbar{width:3px}
 .chat::-webkit-scrollbar-thumb{background:var(--sf2);border-radius:3px}
@@ -43,25 +41,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .msg.assistant .bbl{background:var(--sf);border:1px solid var(--sf2);border-radius:var(--r) var(--r) var(--r) 4px;max-width:92%}
 .bbl{padding:10px 14px;font-size:13.5px;line-height:1.55;word-wrap:break-word}
 .bbl code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px;font-family:'SF Mono','Fira Code',monospace;font-size:12px}
-.bbl pre{background:#0d1117;padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:11.5px;line-height:1.45}
+.bbl pre{background:#0d1117;padding:10px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:11.5px;line-height:1.45;position:relative}
 .bbl pre code{background:none;padding:0}
-.bbl strong{color:var(--ac)}
-.bbl a{color:var(--cy)}
+.bbl strong{color:var(--ac)}.bbl a{color:var(--cy)}
 .bbl ul,.bbl ol{padding-left:18px;margin:4px 0}
+.copy-btn{position:absolute;top:4px;right:4px;background:var(--sf2);border:none;color:var(--dm);
+  padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;opacity:0;transition:opacity .2s}
+.bbl pre:hover .copy-btn{opacity:1}
 
-/* Tool events */
-.te{background:var(--sf);border-left:3px solid var(--pu);padding:6px 10px;margin:5px 0;border-radius:0 8px 8px 0;font-size:11.5px}
-.te .tn{color:var(--pu);font-weight:600}
-.te .tr{color:var(--dm);margin-top:3px;font-family:monospace;font-size:10.5px;max-height:80px;overflow-y:auto;white-space:pre-wrap}
-
-/* Thinking */
 .thk{display:flex;align-items:center;gap:8px;padding:10px 14px;color:var(--dm);font-size:12px}
 .thk .dots span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;animation:pl 1.4s infinite}
 .thk .dots span:nth-child(2){animation-delay:.2s}
 .thk .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pl{0%,80%,100%{opacity:.3}40%{opacity:1}}
 
-/* Input */
 .ia{background:var(--sf);padding:10px 14px;border-top:1px solid var(--sf2);flex-shrink:0;
   padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .ir{display:flex;gap:8px;align-items:flex-end}
@@ -74,7 +67,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .sb:disabled{opacity:.4;cursor:not-allowed}
 .sb svg{width:18px;height:18px;fill:#0f172a}
 
-/* Welcome */
 .wc{text-align:center;padding:32px 16px}
 .wc .sym{font-size:56px;margin-bottom:12px}
 .wc h2{font-size:18px;margin-bottom:6px}
@@ -83,11 +75,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .chip{background:var(--sf2);color:var(--tx);border:none;padding:7px 14px;border-radius:18px;font-size:12px;cursor:pointer;transition:background .2s}
 .chip:hover,.chip:active{background:var(--ac);color:#0f172a}
 
-/* Setup modal */
+/* Modals */
 .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:50;display:none;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal{background:var(--sf);border-radius:16px;padding:24px;width:90%;max-width:400px;max-height:85dvh;overflow-y:auto}
+.modal{background:var(--sf);border-radius:16px;padding:24px;width:90%;max-width:420px;max-height:85dvh;overflow-y:auto}
 .modal h2{font-size:18px;margin-bottom:4px}
+.modal h3{font-size:14px;margin-top:16px;margin-bottom:8px;color:var(--ac)}
 .modal p{color:var(--dm);font-size:13px;margin-bottom:14px;line-height:1.5}
 .modal label{font-size:12px;color:var(--dm);display:block;margin-bottom:4px;margin-top:12px}
 .modal input,.modal select{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--sf2);
@@ -95,10 +88,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .modal input:focus{outline:none;border-color:var(--ac)}
 .modal .note{font-size:11px;color:var(--dm);margin-bottom:8px;line-height:1.4}
 .modal .btns{display:flex;gap:8px;margin-top:16px}
-.modal .btn{flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.modal .btn{flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
 .modal .btn-primary{background:var(--ac);color:#0f172a}
 .modal .btn-secondary{background:var(--sf2);color:var(--tx)}
-.modal .free-badge{display:inline-block;background:#065f46;color:#6ee7b7;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:4px}
+.modal .btn-danger{background:var(--rd);color:#fff}
+.modal .btn-sm{padding:6px 12px;font-size:12px;flex:none}
+
+/* Session list */
+.sess-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);
+  border-radius:8px;margin-bottom:6px;cursor:pointer;transition:background .2s;border:1px solid transparent}
+.sess-item:hover,.sess-item.active{border-color:var(--ac)}
+.sess-item.active{background:var(--sf2)}
+.sess-item .sess-title{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sess-item .sess-date{font-size:10px;color:var(--dm);flex-shrink:0}
+.sess-item .sess-del{background:none;border:none;color:var(--rd);cursor:pointer;font-size:14px;padding:2px 6px;flex-shrink:0;opacity:0.5}
+.sess-item .sess-del:hover{opacity:1}
+
+/* Security info */
+.sec-item{display:flex;gap:8px;margin-bottom:8px;font-size:12px;line-height:1.4}
+.sec-item .icon{flex-shrink:0;font-size:14px}
+.sec-item .label{color:var(--dm)}
+.sec-good{color:var(--gn)}.sec-warn{color:var(--yl)}
 </style>
 </head>
 <body>
@@ -107,7 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 <div class="hd">
   <div class="logo">ॐ</div>
   <div class="tt">Om</div>
-  <select class="sel" id="modeSelect">
+  <select class="sel" id="modeSelect" onchange="saveCurrentSession()">
     <option value="architect">🏗️ Architect</option>
     <option value="game">🎮 Game</option>
     <option value="ai">🧠 AI/ML</option>
@@ -117,56 +127,74 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <option value="data">📊 Data</option>
     <option value="devops">🔧 DevOps</option>
   </select>
+  <button class="ibtn" onclick="openSessions()">💬</button>
   <button class="ibtn" onclick="openSetup()">⚙️</button>
   <div class="st"><span class="dot" id="dot" style="background:var(--yl)"></span><span id="stxt">setup</span></div>
 </div>
 
 <!-- Chat -->
-<div class="chat" id="chat">
-  <div class="wc" id="welcome">
-    <div class="sym">ॐ</div>
-    <h2>Om — The Creator</h2>
-    <p>Free AI solution architect & builder.<br>Works on any phone, any browser.</p>
-    <div class="chips">
-      <button class="chip" onclick="sendQ('Build a Snake game in Python with pygame')">🎮 Snake Game</button>
-      <button class="chip" onclick="sendQ('Create a REST API with Flask')">🌐 REST API</button>
-      <button class="chip" onclick="sendQ('Build a personal portfolio website with HTML/CSS/JS')">🎨 Portfolio Site</button>
-      <button class="chip" onclick="sendQ('Design a microservice architecture for an e-commerce platform')">🏗️ Microservice</button>
-      <button class="chip" onclick="sendQ('Create a RAG chatbot using Python')">🧠 RAG Chatbot</button>
-      <button class="chip" onclick="sendQ('Build a real-time chat app with WebSockets')">💬 Chat App</button>
-    </div>
-    <p style="margin-top:20px;font-size:12px">Tap ⚙️ to set up a <strong>free</strong> API key (Gemini or Groq)</p>
-  </div>
-</div>
+<div class="chat" id="chat"></div>
 
 <!-- Setup Modal -->
 <div class="modal-bg" id="setupModal">
   <div class="modal">
-    <h2>⚙️ Setup AI Provider</h2>
-    <p>Choose a free provider and enter your API key. Your key stays in your browser — never sent anywhere except the AI provider.</p>
+    <h2>⚙️ Settings</h2>
+
+    <h3>🤖 AI Provider</h3>
+    <p>Your key stays in your browser only — never sent to any server except the AI provider directly.</p>
 
     <label>Provider</label>
     <select id="providerSelect" onchange="updateProviderUI()">
-      <option value="gemini">Google Gemini <span class="free-badge">FREE</span></option>
-      <option value="groq">Groq <span class="free-badge">FREE</span></option>
+      <option value="gemini">Google Gemini (FREE)</option>
+      <option value="groq">Groq (FREE)</option>
     </select>
 
     <div id="geminiSetup">
       <label>Gemini API Key</label>
       <input type="password" id="geminiKey" placeholder="paste your key here">
-      <div class="note">Get a free key: go to <strong>aistudio.google.com</strong> → "Get API key" → Create → Copy</div>
+      <div class="note">Get free: <strong>aistudio.google.com</strong> → "Get API key" → Create → Copy</div>
     </div>
-
     <div id="groqSetup" style="display:none">
       <label>Groq API Key</label>
       <input type="password" id="groqKey" placeholder="paste your key here">
-      <div class="note">Get a free key: go to <strong>console.groq.com</strong> → "API Keys" → Create → Copy</div>
+      <div class="note">Get free: <strong>console.groq.com</strong> → "API Keys" → Create → Copy</div>
+    </div>
+
+    <div id="currentKeyDisplay" style="display:none;margin-top:8px">
+      <div class="note">Current key: <strong id="maskedKey"></strong></div>
     </div>
 
     <div class="btns">
       <button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
       <button class="btn btn-primary" onclick="saveSetup()">Save & Connect</button>
     </div>
+
+    <h3>🔒 Security & Privacy</h3>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">API key stored in <strong>browser only</strong> (localStorage). Never sent to any server except the AI provider.</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">Chat history stored in <strong>browser only</strong>. No backend, no database, no tracking.</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">All API calls go <strong>directly</strong> to Gemini/Groq over HTTPS. No middleman.</span></div>
+    <div class="sec-item"><span class="icon">✅</span><span class="label">Open source: <a href="https://github.com/KdarshUchiha/agent-om" style="color:var(--cy)">github.com/KdarshUchiha/agent-om</a></span></div>
+    <div class="sec-item"><span class="icon">⚠️</span><span class="label">Your API key is accessible via browser DevTools. Use a <strong>free-tier key</strong> — don't use a key tied to billing.</span></div>
+
+    <h3>🗑️ Data Management</h3>
+    <div class="btns" style="margin-top:8px">
+      <button class="btn btn-sm btn-secondary" onclick="exportAll()">📥 Export All Data</button>
+      <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑️ Erase Everything</button>
+    </div>
+    <div class="note" style="margin-top:6px">Export downloads all sessions as JSON. Erase deletes API key + all chat history permanently.</div>
+  </div>
+</div>
+
+<!-- Sessions Modal -->
+<div class="modal-bg" id="sessionsModal">
+  <div class="modal">
+    <h2>💬 Conversations</h2>
+    <p>Your chats are saved automatically in your browser.</p>
+    <div class="btns" style="margin-bottom:12px">
+      <button class="btn btn-primary" onclick="newSession()">+ New Chat</button>
+      <button class="btn btn-secondary" onclick="closeSessions()">Close</button>
+    </div>
+    <div id="sessionList"></div>
   </div>
 </div>
 
@@ -182,11 +210,52 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 </div>
 
 <script>
-// ── State ──
+// ══════════════════════════════════════════════════════════════════════════════
+// SECURITY: XSS-safe text escaping — used for ALL user and AI content
+// ══════════════════════════════════════════════════════════════════════════════
+function esc(t){
+  const d=document.createElement('div');
+  d.appendChild(document.createTextNode(t));
+  return d.innerHTML;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SESSION STORAGE — all conversations persist in localStorage
+// ══════════════════════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'om_sessions';
+const ACTIVE_KEY = 'om_active_session';
+
+function loadAllSessions(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+
+function saveAllSessions(sessions){
+  const json = JSON.stringify(sessions);
+  // localStorage limit is ~5MB; trim oldest sessions if needed
+  try { localStorage.setItem(STORAGE_KEY, json); }
+  catch(e) {
+    // Storage full — delete oldest sessions until it fits
+    const keys = Object.keys(sessions).sort((a,b) =>
+      (sessions[a].updatedAt||0) - (sessions[b].updatedAt||0));
+    while(keys.length > 1){
+      delete sessions[keys.shift()];
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions)); return; }
+      catch(e2) { continue; }
+    }
+  }
+}
+
+function generateId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════════════
 let provider = localStorage.getItem('om_provider') || '';
 let apiKey = localStorage.getItem('om_apikey') || '';
 let model = '';
-let history = [];
+let activeSessionId = localStorage.getItem(ACTIVE_KEY) || '';
+let history = [];   // current conversation messages [{role,content}]
 let loading = false;
 
 const MODES = {
@@ -210,13 +279,27 @@ Rules:
 - Provide runnable examples.
 - Be concise but thorough.`;
 
-// ── Init ──
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════════
 function init(){
   if(provider && apiKey){
     model = provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';
     setStatus(provider,'var(--gn)');
   } else {
-    setStatus('tap ⚙️ to setup','var(--yl)');
+    setStatus('tap ⚙️','var(--yl)');
+  }
+
+  // Load or create session
+  const sessions = loadAllSessions();
+  if(activeSessionId && sessions[activeSessionId]){
+    loadSession(activeSessionId);
+  } else if(Object.keys(sessions).length > 0){
+    const latest = Object.keys(sessions).sort((a,b) =>
+      (sessions[b].updatedAt||0) - (sessions[a].updatedAt||0))[0];
+    loadSession(latest);
+  } else {
+    newSession();
   }
 }
 
@@ -225,51 +308,170 @@ function setStatus(t,c){
   document.getElementById('stxt').textContent=t;
 }
 
-// ── Setup modal ──
-function openSetup(){document.getElementById('setupModal').classList.add('open')}
-function closeSetup(){document.getElementById('setupModal').classList.remove('open')}
-
-function updateProviderUI(){
-  const p=document.getElementById('providerSelect').value;
-  document.getElementById('geminiSetup').style.display=p==='gemini'?'block':'none';
-  document.getElementById('groqSetup').style.display=p==='groq'?'block':'none';
+function maskKey(k){
+  if(!k || k.length < 8) return '****';
+  return k.slice(0,4) + '...' + k.slice(-4);
 }
 
-function saveSetup(){
-  const p=document.getElementById('providerSelect').value;
-  const k=p==='gemini'?document.getElementById('geminiKey').value.trim():document.getElementById('groqKey').value.trim();
-  if(!k){alert('Please enter an API key');return}
-  provider=p; apiKey=k;
-  model=p==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';
-  localStorage.setItem('om_provider',p);
-  localStorage.setItem('om_apikey',k);
-  setStatus(p,'var(--gn)');
-  closeSetup();
-  history=[];
+// ══════════════════════════════════════════════════════════════════════════════
+// SESSION MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════════════
+function newSession(){
+  const id = generateId();
+  const sessions = loadAllSessions();
+  sessions[id] = {
+    id, title:'New chat', messages:[], mode:'architect',
+    createdAt:Date.now(), updatedAt:Date.now()
+  };
+  saveAllSessions(sessions);
+  loadSession(id);
+  closeSessions();
 }
 
-// ── UI helpers ──
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function loadSession(id){
+  saveCurrentSession(); // save current before switching
+  const sessions = loadAllSessions();
+  const sess = sessions[id];
+  if(!sess) return;
 
-function renderMd(t){
-  return t
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^\s*#{3}\s+(.+)$/gm,'<h3>$1</h3>')
-    .replace(/^\s*#{2}\s+(.+)$/gm,'<h2>$1</h2>')
-    .replace(/^\s*#{1}\s+(.+)$/gm,'<h1>$1</h1>')
-    .replace(/^\s*[-*]\s+(.+)$/gm,'<li>$1</li>')
-    .replace(/\n/g,'<br>');
+  activeSessionId = id;
+  localStorage.setItem(ACTIVE_KEY, id);
+  history = sess.messages || [];
+
+  if(sess.mode && MODES[sess.mode]){
+    document.getElementById('modeSelect').value = sess.mode;
+  }
+
+  renderChat();
 }
 
-function addMsg(role,content){
-  const w=document.getElementById('welcome');if(w)w.remove();
-  const c=document.getElementById('chat');
-  const d=document.createElement('div');d.className=`msg ${role}`;
-  d.innerHTML=`<div class="bbl">${role==='user'?esc(content).replace(/\n/g,'<br>'):renderMd(content)}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
+function saveCurrentSession(){
+  if(!activeSessionId) return;
+  const sessions = loadAllSessions();
+  if(!sessions[activeSessionId]) return;
+
+  sessions[activeSessionId].messages = history;
+  sessions[activeSessionId].mode = document.getElementById('modeSelect').value;
+  sessions[activeSessionId].updatedAt = Date.now();
+
+  // Auto-title from first user message
+  if(sessions[activeSessionId].title === 'New chat' && history.length > 0){
+    const firstMsg = history.find(m => m.role === 'user');
+    if(firstMsg) sessions[activeSessionId].title = firstMsg.content.slice(0, 50);
+  }
+
+  saveAllSessions(sessions);
+}
+
+function deleteSession(id, evt){
+  evt.stopPropagation();
+  if(!confirm('Delete this conversation?')) return;
+  const sessions = loadAllSessions();
+  delete sessions[id];
+  saveAllSessions(sessions);
+
+  if(id === activeSessionId){
+    const remaining = Object.keys(sessions);
+    if(remaining.length > 0) loadSession(remaining[0]);
+    else newSession();
+  }
+  renderSessionList();
+}
+
+function renderSessionList(){
+  const sessions = loadAllSessions();
+  const list = document.getElementById('sessionList');
+  const sorted = Object.values(sessions).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+
+  if(sorted.length === 0){
+    list.innerHTML = '<p style="color:var(--dm);font-size:13px;text-align:center">No conversations yet</p>';
+    return;
+  }
+
+  list.innerHTML = sorted.map(s => {
+    const date = new Date(s.updatedAt||s.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+    const msgCount = (s.messages||[]).length;
+    const active = s.id === activeSessionId ? ' active' : '';
+    const modeIcon = {architect:'🏗️',game:'🎮',ai:'🧠',web:'🌐',mobile:'📱',systems:'⚙️',data:'📊',devops:'🔧'}[s.mode]||'🏗️';
+    return `<div class="sess-item${active}" onclick="loadSession('${esc(s.id)}');closeSessions()">
+      <span>${modeIcon}</span>
+      <span class="sess-title">${esc(s.title||'New chat')}</span>
+      <span class="sess-date">${msgCount} msgs · ${date}</span>
+      <button class="sess-del" onclick="deleteSession('${esc(s.id)}',event)" title="Delete">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — XSS-safe markdown
+// ══════════════════════════════════════════════════════════════════════════════
+function renderMd(raw){
+  let t = esc(raw);
+
+  // Code blocks: ```lang\ncode\n``` → <pre> with copy button
+  t = t.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><button class="copy-btn" onclick="copyCode(this)">copy</button><code>${code}</code></pre>`);
+
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/^\s*#{3}\s+(.+)$/gm, '<h3>$1</h3>');
+  t = t.replace(/^\s*#{2}\s+(.+)$/gm, '<h2>$1</h2>');
+  t = t.replace(/^\s*#{1}\s+(.+)$/gm, '<h1>$1</h1>');
+  t = t.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+function copyCode(btn){
+  const code = btn.parentElement.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+
+function renderChat(){
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+
+  if(history.length === 0){
+    chat.innerHTML = `<div class="wc">
+      <div class="sym">ॐ</div>
+      <h2>Om — The Creator</h2>
+      <p>Free AI solution architect &amp; builder.<br>Works on any phone, any browser.</p>
+      <div class="chips">
+        <button class="chip" onclick="sendQ('Build a Snake game in Python with pygame')">🎮 Snake Game</button>
+        <button class="chip" onclick="sendQ('Create a REST API with Flask')">🌐 REST API</button>
+        <button class="chip" onclick="sendQ('Build a personal portfolio website with HTML/CSS/JS')">🎨 Portfolio</button>
+        <button class="chip" onclick="sendQ('Design a microservice architecture for e-commerce')">🏗️ Microservice</button>
+        <button class="chip" onclick="sendQ('Create a RAG chatbot using Python')">🧠 RAG Chatbot</button>
+        <button class="chip" onclick="sendQ('Build a real-time chat app with WebSockets')">💬 Chat App</button>
+      </div>
+      <p style="margin-top:20px;font-size:12px">Tap ⚙️ to set up a <strong>free</strong> API key</p>
+    </div>`;
+    return;
+  }
+
+  for(const msg of history){
+    const div = document.createElement('div');
+    div.className = `msg ${msg.role}`;
+    div.innerHTML = `<div class="bbl">${msg.role==='user' ? esc(msg.content).replace(/\n/g,'<br>') : renderMd(msg.content)}</div>`;
+    chat.appendChild(div);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addMsgToUI(role, content){
+  const chat = document.getElementById('chat');
+  // Remove welcome if present
+  const wc = chat.querySelector('.wc');
+  if(wc) wc.remove();
+
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="bbl">${role==='user' ? esc(content).replace(/\n/g,'<br>') : renderMd(content)}</div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
 
 function showThinking(){
@@ -284,13 +486,12 @@ function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,
   document.getElementById('sendBtn').disabled=!el.value.trim()||loading}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
 
-// ── Gemini API call ──
+// ══════════════════════════════════════════════════════════════════════════════
+// API CALLS
+// ══════════════════════════════════════════════════════════════════════════════
 async function callGemini(messages){
   const mode=document.getElementById('modeSelect').value;
-  const contents=messages.map(m=>({
-    role:m.role==='assistant'?'model':'user',
-    parts:[{text:m.content}]
-  }));
+  const contents=messages.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
 
   const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,{
     method:'POST',
@@ -301,68 +502,62 @@ async function callGemini(messages){
       generationConfig:{temperature:0.7,maxOutputTokens:8192}
     })
   });
-
-  if(!r.ok){
-    const err=await r.json().catch(()=>({}));
-    throw new Error(err.error?.message||`Gemini API error: ${r.status}`);
-  }
+  if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`API error: ${r.status}`)}
   const d=await r.json();
   if(!d.candidates||!d.candidates[0])throw new Error('No response from Gemini');
   return d.candidates[0].content.parts.map(p=>p.text).join('');
 }
 
-// ── Groq API call ──
 async function callGroq(messages){
   const mode=document.getElementById('modeSelect').value;
-  const msgs=[
-    {role:'system',content:SYS_PROMPT+'\n\n'+MODES[mode]},
-    ...messages
-  ];
-
+  const msgs=[{role:'system',content:SYS_PROMPT+'\n\n'+MODES[mode]},...messages];
   const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
     body:JSON.stringify({model,messages:msgs,temperature:0.7,max_tokens:8192})
   });
-
-  if(!r.ok){
-    const err=await r.json().catch(()=>({}));
-    throw new Error(err.error?.message||`Groq API error: ${r.status}`);
-  }
+  if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`API error: ${r.status}`)}
   const d=await r.json();
   return d.choices[0].message.content;
 }
 
-// ── Send message ──
+// ══════════════════════════════════════════════════════════════════════════════
+// SEND MESSAGE
+// ══════════════════════════════════════════════════════════════════════════════
 async function send(){
   const inp=document.getElementById('input');
   const text=inp.value.trim();
   if(!text||loading)return;
-
   if(!provider||!apiKey){openSetup();return}
 
   inp.value='';ar(inp);
   loading=true;document.getElementById('sendBtn').disabled=true;
 
-  addMsg('user',text);
+  addMsgToUI('user',text);
   history.push({role:'user',content:text});
+  saveCurrentSession();
   showThinking();
 
   try{
     let reply;
     if(provider==='gemini') reply=await callGemini(history);
     else if(provider==='groq') reply=await callGroq(history);
-    else throw new Error('No provider configured');
+    else throw new Error('No provider');
 
     hideThinking();
-    addMsg('assistant',reply);
+    addMsgToUI('assistant',reply);
     history.push({role:'assistant',content:reply});
 
-    // Keep history manageable (last 20 turns)
-    if(history.length>40)history=history.slice(-20);
+    // Trim to last 40 messages to stay within localStorage limits
+    if(history.length>80) history=history.slice(-40);
+
+    saveCurrentSession();
   }catch(e){
     hideThinking();
-    addMsg('assistant',`**Error:** ${e.message}\n\nCheck your API key in ⚙️ settings. Make sure it's valid and has quota remaining.`);
+    const errMsg=`**Error:** ${e.message}\n\nCheck your API key in ⚙️ settings.`;
+    addMsgToUI('assistant',errMsg);
+    history.push({role:'assistant',content:errMsg});
+    saveCurrentSession();
   }
 
   loading=false;
@@ -375,8 +570,97 @@ function sendQ(t){
   document.getElementById('input').value=t;send();
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// SETUP MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openSetup(){
+  document.getElementById('setupModal').classList.add('open');
+  if(provider) document.getElementById('providerSelect').value = provider;
+  updateProviderUI();
+  // Show masked key if set
+  const disp = document.getElementById('currentKeyDisplay');
+  if(apiKey){
+    disp.style.display='block';
+    document.getElementById('maskedKey').textContent=maskKey(apiKey);
+  } else {
+    disp.style.display='none';
+  }
+}
+function closeSetup(){document.getElementById('setupModal').classList.remove('open')}
+
+function updateProviderUI(){
+  const p=document.getElementById('providerSelect').value;
+  document.getElementById('geminiSetup').style.display=p==='gemini'?'block':'none';
+  document.getElementById('groqSetup').style.display=p==='groq'?'block':'none';
+}
+
+function saveSetup(){
+  const p=document.getElementById('providerSelect').value;
+  const k=p==='gemini'?document.getElementById('geminiKey').value.trim():document.getElementById('groqKey').value.trim();
+  if(!k && !apiKey){alert('Please enter an API key');return}
+
+  provider=p;
+  if(k) apiKey=k; // only update key if user entered a new one
+  model=p==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';
+  localStorage.setItem('om_provider',p);
+  localStorage.setItem('om_apikey',apiKey);
+  setStatus(p,'var(--gn)');
+  closeSetup();
+  // Clear input fields so key doesn't linger in DOM
+  document.getElementById('geminiKey').value='';
+  document.getElementById('groqKey').value='';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SESSIONS MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openSessions(){
+  document.getElementById('sessionsModal').classList.add('open');
+  renderSessionList();
+}
+function closeSessions(){document.getElementById('sessionsModal').classList.remove('open')}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA MANAGEMENT — export & erase
+// ══════════════════════════════════════════════════════════════════════════════
+function exportAll(){
+  const data = {
+    exportedAt: new Date().toISOString(),
+    provider: provider,
+    sessions: loadAllSessions()
+  };
+  // Never include the API key in exports
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `om-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAll(){
+  if(!confirm('This will permanently delete your API key and ALL chat history. Continue?')) return;
+  if(!confirm('Are you sure? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(ACTIVE_KEY);
+  localStorage.removeItem('om_provider');
+  localStorage.removeItem('om_apikey');
+  provider=''; apiKey=''; history=[];
+  activeSessionId='';
+  setStatus('tap ⚙️','var(--yl)');
+  newSession();
+  renderChat();
+  closeSetup();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // PWA
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+// ══════════════════════════════════════════════════════════════════════════════
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// Save session before user leaves
+window.addEventListener('beforeunload', () => saveCurrentSession());
 
 init();
 document.getElementById('input').focus();
