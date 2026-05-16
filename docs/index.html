@@ -126,7 +126,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 </div>
 
 <!-- Main App (hidden until login/skip) -->
-<div id="mainApp" style="display:none;flex:1;display:none;flex-direction:column">
+<div id="mainApp" style="display:none">
 
   <!-- Header -->
   <div class="hd">
@@ -433,12 +433,15 @@ window.skipLogin = function(){
 function showLoginScreen(){
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('mainApp').style.display='none';
+  document.body.style.display='flex';
 }
 
 function showMainApp(){
   document.getElementById('loginScreen').style.display='none';
   const app=document.getElementById('mainApp');
-  app.style.display='flex';app.style.flexDirection='column';
+  app.style.display='flex';
+  app.style.flexDirection='column';
+  app.style.flex='1';
 }
 
 function updateAccountUI(){
@@ -681,13 +684,24 @@ async function initApp(){
 if(firebaseEnabled){
   onAuthStateChanged(auth, async(user)=>{
     currentUser=user;
-    if(user){showMainApp();await initApp();}
-    else if(localStorage.getItem('om_skip_login')){showMainApp();await initApp();}
-    else{showLoginScreen();}
+    if(user){
+      // Logged in — clear skip flag, show app
+      localStorage.removeItem('om_skip_login');
+      showMainApp();
+      await initApp();
+    } else if(localStorage.getItem('om_skip_login')){
+      // Previously skipped — show app in offline mode
+      showMainApp();
+      await initApp();
+    } else {
+      // First visit or logged out — show login screen
+      showLoginScreen();
+    }
   });
 } else {
-  // No Firebase — always show main app with localStorage only
-  showMainApp();initApp();
+  // No Firebase config — always show main app with localStorage only
+  showMainApp();
+  initApp();
 }
 
 window.addEventListener('beforeunload',()=>saveCurrentSession());
