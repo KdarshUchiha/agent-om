@@ -19,6 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   background:var(--bg);color:var(--tx);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+#mainApp{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden}
 
 .hd{background:var(--sf);padding:10px 14px;display:flex;align-items:center;gap:8px;
   border-bottom:1px solid var(--sf2);flex-shrink:0;z-index:10}
@@ -28,7 +29,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .sel{background:var(--sf2);color:var(--tx);border:none;border-radius:8px;padding:5px 8px;font-size:12px}
 .ibtn{background:var(--sf2);border:none;color:var(--tx);padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12px}
 
-.chat{flex:1;overflow-y:auto;padding:14px;padding-bottom:8px}
+.chat{flex:1;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:8px;min-height:0;overscroll-behavior:contain}
 .chat::-webkit-scrollbar{width:3px}.chat::-webkit-scrollbar-thumb{background:var(--sf2);border-radius:3px}
 .msg{margin-bottom:16px;animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -145,7 +146,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <button class="skip" onclick="skipLogin()">Continue without signing in</button>
 </div>
 
-<div id="mainApp" style="display:none">
+<div id="mainApp">
   <div class="hd">
     <div class="logo">ॐ</div><div class="tt">Om</div>
     <select class="sel" id="modeSelect" onchange="saveCurrentSession()">
@@ -296,7 +297,7 @@ window.signOutUser=async function(){if(auth)await signOut(auth);currentUser=null
 window.skipLogin=function(){sessionStorage.setItem('om_skip_login','1');showMainApp();initApp()};
 
 function showLoginScreen(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none'}
-function showMainApp(){document.getElementById('loginScreen').style.display='none';const a=document.getElementById('mainApp');a.style.display='flex';a.style.flexDirection='column';a.style.flex='1'}
+function showMainApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='flex'}
 
 function updateAccountUI(){
   const c=document.getElementById('accountInfo'),av=document.getElementById('userAvatar');
