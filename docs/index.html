@@ -347,10 +347,25 @@ async function loadSess(id){
   console.log('Loaded session:',id,'messages:',history.length)}
 window.loadSession=async function(id){await loadSess(id);closeSessions()};
 
-window.saveCurrentSession=async function(){if(!activeId)return;const s=await loadAllSessions();if(!s[activeId])return;
-  s[activeId].messages=history;s[activeId].mode=document.getElementById('modeSelect').value;s[activeId].updatedAt=Date.now();
-  if(s[activeId].title==='New chat'&&history.length>0){const f=history.find(m=>m.role==='user');if(f)s[activeId].title=f.content.slice(0,50)}
-  await saveSess(activeId,s[activeId])};
+window.saveCurrentSession=async function(){
+  if(!activeId)return;
+  // Build session data directly from current state — don't re-read from storage
+  const mode=document.getElementById('modeSelect').value;
+  let title='New chat';
+  if(history.length>0){const f=history.find(m=>m.role==='user');if(f)title=f.content.slice(0,50)}
+  // Read existing session metadata only from localStorage (fast, no async)
+  let existing={};
+  try{const all=JSON.parse(localStorage.getItem(LS_S)||'{}');existing=all[activeId]||{}}catch(e){}
+  const data={
+    id:activeId,
+    title:existing.title==='New chat'?title:(existing.title||title),
+    messages:[...history],  // copy the array
+    mode,
+    createdAt:existing.createdAt||Date.now(),
+    updatedAt:Date.now()
+  };
+  await saveSess(activeId,data);
+};
 
 window.deleteSession=async function(id,evt){evt.stopPropagation();if(!confirm('Delete this conversation?'))return;
   await delSess(id);if(id===activeId){const r=Object.keys(await loadAllSessions());if(r.length>0)await loadSess(r[0]);else await newSession()}await renderSessList()};
