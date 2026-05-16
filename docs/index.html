@@ -315,10 +315,18 @@ function updateAccountUI(){
 
 // Sessions
 window.newSession=async function(){const id=genId();await saveSess(id,{id,title:'New chat',messages:[],mode:'architect',createdAt:Date.now(),updatedAt:Date.now()});await loadSess(id);closeSessions()};
-async function loadSess(id){await window.saveCurrentSession();const s=await loadAllSessions();const sess=s[id];if(!sess)return;
-  activeId=id;localStorage.setItem(LS_A,id);history=sess.messages||[];
-  if(sess.mode&&MODES[sess.mode])document.getElementById('modeSelect').value=sess.mode;renderChat()}
-window.loadSession=function(id){loadSess(id)};
+async function loadSess(id){
+  // Save current session first
+  if(activeId&&activeId!==id)await window.saveCurrentSession();
+  // Load target session
+  const s=await loadAllSessions();const sess=s[id];
+  if(!sess){console.warn('Session not found:',id);return}
+  activeId=id;localStorage.setItem(LS_A,id);
+  history=Array.isArray(sess.messages)?sess.messages:[];
+  if(sess.mode&&MODES[sess.mode])document.getElementById('modeSelect').value=sess.mode;
+  renderChat();
+  console.log('Loaded session:',id,'messages:',history.length)}
+window.loadSession=async function(id){await loadSess(id);closeSessions()};
 
 window.saveCurrentSession=async function(){if(!activeId)return;const s=await loadAllSessions();if(!s[activeId])return;
   s[activeId].messages=history;s[activeId].mode=document.getElementById('modeSelect').value;s[activeId].updatedAt=Date.now();
@@ -335,7 +343,7 @@ async function renderSessList(){
   const ic={architect:'🏗️',game:'🎮',ai:'🧠',web:'🌐',mobile:'📱',systems:'⚙️',data:'📊',devops:'🔧'};
   list.innerHTML=sorted.map(s=>{const d=new Date(s.updatedAt||s.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const mc=(s.messages||[]).length,act=s.id===activeId?' active':'';
-    return`<div class="sess-item${act}" onclick="loadSession('${esc(s.id)}');closeSessions()">
+    return`<div class="sess-item${act}" onclick="loadSession('${esc(s.id)}')">
       <span>${ic[s.mode]||'🏗️'}</span><span class="sess-title">${esc(s.title||'New chat')}</span>
       <span class="sess-date">${mc} · ${d}</span><button class="sess-del" onclick="deleteSession('${esc(s.id)}',event)">✕</button></div>`}).join('')}
 
