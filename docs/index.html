@@ -231,23 +231,17 @@ async function decryptText(b,uid){try{const k=await deriveKey(uid);const c=Uint8
 const LS_S='om_sessions',LS_A='om_active_session';
 function isCloud(){return firebaseEnabled&&currentUser}
 async function loadAllSessions(){
-  // Always read localStorage first — it's the ground truth
+  // localStorage is the primary source of truth
   let local={};
   try{local=JSON.parse(localStorage.getItem(LS_S)||'{}')}catch(e){}
-  // If logged in, merge with Firestore (local wins on conflicts)
+  // If logged in, pull cloud-only sessions (ones not in localStorage)
   if(isCloud()){
     try{
       const snap=await getDocs(collection(db,'users',currentUser.uid,'sessions'));
-      const cloud={};snap.forEach(d=>{cloud[d.id]=d.data()});
-      // Merge: for each session, pick whichever has more messages
-      const merged={...cloud};
-      for(const[id,sess] of Object.entries(local)){
-        const cloudSess=cloud[id];
-        if(!cloudSess||((sess.messages||[]).length>=(cloudSess.messages||[]).length)){
-          merged[id]=sess;
-        }
-      }
-      return merged;
+      snap.forEach(d=>{
+        const id=d.id;
+        if(!local[id]){local[id]=d.data()}  // only add if not in localStorage
+      });
     }catch(e){console.warn('Firestore read failed',e)}
   }
   return local;
@@ -337,11 +331,16 @@ window.newSession=async function(){const id=genId();await saveSess(id,{id,title:
 async function loadSess(id){
   // Save current session first
   if(activeId&&activeId!==id)await window.saveCurrentSession();
-  // Load target session
-  const s=await loadAllSessions();const sess=s[id];
+  // Load target session directly from localStorage (fast, reliable)
+  let sess=null;
+  try{const all=JSON.parse(localStorage.getItem(LS_S)||'{}');sess=all[id]}catch(e){}
+  // Fallback to Firestore if not in localStorage
+  if(!sess&&isCloud()){
+    try{const snap=await getDoc(doc(db,'users',currentUser.uid,'sessions',id));
+      if(snap.exists())sess=snap.data()}catch(e){}}
   if(!sess){console.warn('Session not found:',id);return}
   activeId=id;localStorage.setItem(LS_A,id);
-  history=Array.isArray(sess.messages)?sess.messages:[];
+  history=Array.isArray(sess.messages)?[...sess.messages]:[];
   if(sess.mode&&MODES[sess.mode])document.getElementById('modeSelect').value=sess.mode;
   renderChat();
   console.log('Loaded session:',id,'messages:',history.length)}
