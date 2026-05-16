@@ -231,8 +231,27 @@ async function decryptText(b,uid){try{const k=await deriveKey(uid);const c=Uint8
 const LS_S='om_sessions',LS_A='om_active_session';
 function isCloud(){return firebaseEnabled&&currentUser}
 async function loadAllSessions(){
-  if(isCloud()){try{const s=await getDocs(collection(db,'users',currentUser.uid,'sessions'));const o={};s.forEach(d=>{o[d.id]=d.data()});return o}catch(e){}}
-  try{return JSON.parse(localStorage.getItem(LS_S)||'{}')}catch(e){return{}}}
+  // Always read localStorage first — it's the ground truth
+  let local={};
+  try{local=JSON.parse(localStorage.getItem(LS_S)||'{}')}catch(e){}
+  // If logged in, merge with Firestore (local wins on conflicts)
+  if(isCloud()){
+    try{
+      const snap=await getDocs(collection(db,'users',currentUser.uid,'sessions'));
+      const cloud={};snap.forEach(d=>{cloud[d.id]=d.data()});
+      // Merge: for each session, pick whichever has more messages
+      const merged={...cloud};
+      for(const[id,sess] of Object.entries(local)){
+        const cloudSess=cloud[id];
+        if(!cloudSess||((sess.messages||[]).length>=(cloudSess.messages||[]).length)){
+          merged[id]=sess;
+        }
+      }
+      return merged;
+    }catch(e){console.warn('Firestore read failed',e)}
+  }
+  return local;
+}
 async function saveSess(id,data){
   const l=JSON.parse(localStorage.getItem(LS_S)||'{}');l[id]=data;
   try{localStorage.setItem(LS_S,JSON.stringify(l))}catch(e){const k=Object.keys(l).sort((a,b)=>(l[a].updatedAt||0)-(l[b].updatedAt||0));while(k.length>1){delete l[k.shift()];try{localStorage.setItem(LS_S,JSON.stringify(l));break}catch(e2){}}}
