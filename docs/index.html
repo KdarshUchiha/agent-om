@@ -162,6 +162,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .login-screen .skip{color:var(--dm);font-size:13px;margin-top:16px;cursor:pointer;text-decoration:underline;background:none;border:none}
 .login-screen .skip:hover{color:var(--tx)}
 .user-avatar{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--sf2)}
+
+/* ── Tier 3: Voice input ── */
+.mic-btn{background:none;border:none;color:var(--dm);cursor:pointer;font-size:18px;padding:8px 4px;flex-shrink:0;transition:color .2s}
+.mic-btn:hover{color:var(--ac)}
+.mic-btn.recording{color:var(--rd);animation:pulse-mic 1s infinite}
+@keyframes pulse-mic{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Tier 3: Token usage ── */
+.token-bar{display:flex;justify-content:space-between;padding:2px 14px;font-size:10px;color:var(--dm);background:var(--sf);border-top:1px solid var(--sf2)}
+.token-bar span{display:flex;align-items:center;gap:4px}
+
+/* ── Tier 3: Image generation ── */
+.gen-img{max-width:100%;border-radius:8px;margin:8px 0;cursor:pointer}
+.gen-img:hover{opacity:.9}
+
+/* ── Tier 3: Compare mode ── */
+.compare-container{display:flex;gap:8px;width:100%;max-width:92%}
+.compare-col{flex:1;min-width:0}
+.compare-label{font-size:10px;color:var(--dm);text-align:center;margin-bottom:4px;font-weight:600}
+.compare-pick{background:var(--sf2);border:none;color:var(--tx);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;margin-top:4px;width:100%}
+.compare-pick:hover{background:var(--ac);color:#fff}
+
+/* ── Tier 3: Branch indicator ── */
+.branch-badge{display:inline-flex;align-items:center;gap:3px;background:var(--pu);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;margin:4px 0}
+
+/* ── Tier 3: Plugin ── */
+.plugin-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg);border-radius:8px;margin-bottom:6px;border:1px solid var(--sf2)}
+.plugin-item .plugin-name{flex:1;font-size:13px}.plugin-item .plugin-toggle{cursor:pointer;font-size:16px}
+
+/* ── Tier 3: Offline indicator ── */
+.offline-bar{display:none;padding:4px 14px;background:var(--yl);color:#0f172a;font-size:11px;text-align:center;font-weight:600}
+.offline-bar.show{display:block}
 </style>
 </head>
 <body>
@@ -190,6 +222,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <img class="user-avatar" id="userAvatar" src="" onclick="openSetup()" style="display:none">
     <div class="st"><span class="dot" id="dot" style="background:var(--yl)"></span><span id="stxt">setup</span></div>
   </div>
+  <div class="offline-bar" id="offlineBar">📡 You're offline — messages will be queued</div>
   <div class="chat" id="chat"></div>
   <!-- Templates drawer -->
   <div class="tpl-drawer" id="tplDrawer">
@@ -205,10 +238,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <button class="tpl" onclick="useTpl('Create a CI/CD pipeline (GitHub Actions) for [describe your project]. Include build, test, lint, and deploy stages.')">🚀 CI/CD Pipeline</button>
     <button class="tpl" onclick="useTpl('Refactor this code to be cleaner, more maintainable, and follow SOLID principles:\n\n```\npaste code here\n```')">✨ Refactor</button>
     <button class="tpl" onclick="useTpl('Write a comprehensive README.md for [describe your project].')">📄 README</button>
+    <button class="tpl" onclick="openImgGen()">🎨 Generate Image</button>
+    <button class="tpl" onclick="compareMode()">⚖️ Compare Models</button>
   </div>
   <div class="ia">
     <div class="ir">
       <button class="attach-btn" onclick="triggerFileUpload()" title="Attach image">📎</button>
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Voice input">🎤</button>
       <input type="file" id="fileInput" accept="image/*,.pdf,.txt,.csv,.json,.py,.js,.ts,.html,.css" style="display:none" onchange="handleFileSelect(event)">
       <textarea id="input" rows="1" placeholder="Describe what you want to build..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
       <button class="sb send-mode" id="sendBtn" onclick="toggleSendStop()" disabled>
@@ -217,6 +253,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       </button>
     </div>
     <div id="filePreview" style="display:none"></div>
+    <div class="token-bar" id="tokenBar" style="display:none">
+      <span>📊 Tokens: <strong id="tokenCount">0</strong></span>
+      <span>💬 This chat: <strong id="sessionTokens">0</strong></span>
+      <span id="tokenCost"></span>
+    </div>
   </div>
 </div>
 
@@ -271,6 +312,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <textarea id="shareContent" rows="10" readonly style="font-family:monospace;font-size:12px"></textarea>
   <div class="btns"><button class="btn btn-primary" onclick="copyShareContent()">📋 Copy to Clipboard</button>
     <button class="btn btn-secondary" onclick="closeShare()">Close</button></div>
+</div></div>
+
+<!-- Image gen modal -->
+<div class="modal-bg" id="imgGenModal"><div class="modal">
+  <h2>🎨 Generate Image</h2>
+  <p>Describe the image you want to create. Powered by free Pollinations.ai — no API key needed.</p>
+  <input type="text" id="imgGenPrompt" placeholder="A futuristic city at sunset, cyberpunk style...">
+  <div class="btns"><button class="btn btn-primary" onclick="generateImage()">🎨 Generate</button>
+    <button class="btn btn-secondary" onclick="closeImgGen()">Cancel</button></div>
+  <div id="imgGenResult" style="margin-top:12px"></div>
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
@@ -500,8 +551,8 @@ function renderChat(){
     } else content=renderMd(msg.content);
     const bbl=`<div class="bbl">${content}</div>`;
     let actions='';
-    if(msg.role==='user')actions=`<div class="msg-actions"><button class="msg-action" onclick="editMsg(${i})">✏️</button></div>`;
-    else actions=`<div class="msg-actions"><button class="msg-action" onclick="copyMsg(${i})">📋</button><button class="msg-action" onclick="retryMsg(${i})">🔄</button></div>`;
+    if(msg.role==='user')actions=`<div class="msg-actions"><button class="msg-action" onclick="editMsg(${i})">✏️</button><button class="msg-action" onclick="branchAt(${i})">🌿</button></div>`;
+    else actions=`<div class="msg-actions"><button class="msg-action" onclick="copyMsg(${i})">📋</button><button class="msg-action" onclick="retryMsg(${i})">🔄</button><button class="msg-action" onclick="branchAt(${i})">🌿</button></div>`;
     d.innerHTML=bbl+actions;chat.appendChild(d)});
   chat.scrollTop=chat.scrollHeight}
 
@@ -585,6 +636,10 @@ async function send(){
   if(text||pendingFile){
     inp.value='';window.ar(inp);
     if(!activeId){const id=genId();activeId=id;localStorage.setItem(LS_A,id)}
+    // Offline check
+    if(!navigator.onLine){queueOfflineMessage(text||'[file]');clearFile();return}
+    // Compare mode
+    if(compareEnabled&&!pendingFile){await sendCompare(text);setSendMode();return}
 
     // Build message content (with optional image)
     let msgContent;
@@ -609,6 +664,9 @@ async function send(){
       else{if(data.choices?.[0]?.delta?.content)chunk=data.choices[0].delta.content}
       if(chunk){fullReply+=chunk;updateStreamingMsg(fullReply)}});
     history.push({role:'assistant',content:fullReply});finalizeStreamingMsg(history.length-1);
+    // Token tracking
+    const lastUser=history[history.length-2];
+    updateTokenDisplay(estimateTokens(lastUser?.content||''),estimateTokens(fullReply));
     if(history.length>80)history=history.slice(-40);await window.saveCurrentSession();
   }catch(e){hideThinking();const el=document.getElementById('streaming-msg');if(el)el.remove();
     if(e.name==='AbortError'){if(fullReply){history.push({role:'assistant',content:fullReply+'...\n\n*[stopped]*'});renderChat();await window.saveCurrentSession()}}
@@ -657,17 +715,160 @@ window.clearAll=async function(){if(!confirm('Delete everything permanently?'))r
     await deleteDoc(doc(db,'users',currentUser.uid,'settings','apikey'))}catch(e){}}
   provider='';apiKey='';history=[];activeId='';setStatus('tap ⚙️','var(--yl)');renderChat();closeSetup()};
 
-// ── Keyboard shortcuts ──
+// ══════════════════════════════════════════════════════════════════════════════
+// TIER 3 FEATURES
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── 1. Voice input (Web Speech API) ──
+let recognition=null,isRecording=false;
+window.toggleVoice=function(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Voice input not supported in this browser. Use Chrome or Edge.');return}
+  if(isRecording){if(recognition)recognition.stop();return}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();recognition.continuous=true;recognition.interimResults=true;recognition.lang='en-US';
+  const inp=document.getElementById('input');const btn=document.getElementById('micBtn');
+  let finalTranscript=inp.value;
+  recognition.onstart=()=>{isRecording=true;btn.classList.add('recording');btn.textContent='🔴'};
+  recognition.onresult=(e)=>{let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)finalTranscript+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript}
+    inp.value=finalTranscript+interim;window.ar(inp)};
+  recognition.onerror=()=>{isRecording=false;btn.classList.remove('recording');btn.textContent='🎤'};
+  recognition.onend=()=>{isRecording=false;btn.classList.remove('recording');btn.textContent='🎤';
+    inp.value=finalTranscript;window.ar(inp);inp.focus()};
+  recognition.start()};
+
+// ── 2. Token usage tracking ──
+let totalTokens=0,sessionTokens=0;
+function estimateTokens(text){return Math.ceil((typeof text==='string'?text:JSON.stringify(text)).length/4)}
+function updateTokenDisplay(inputTokens,outputTokens){
+  totalTokens+=inputTokens+outputTokens;sessionTokens+=inputTokens+outputTokens;
+  document.getElementById('tokenBar').style.display='flex';
+  document.getElementById('tokenCount').textContent=totalTokens.toLocaleString();
+  document.getElementById('sessionTokens').textContent=sessionTokens.toLocaleString();
+  const cost=provider==='gemini'?0:((totalTokens/1000000)*0.27);
+  document.getElementById('tokenCost').innerHTML=cost>0?`~$${cost.toFixed(4)}`:'Free tier'}
+
+// ── 3. Image generation (Pollinations.ai — free, no key) ──
+window.openImgGen=function(){document.getElementById('imgGenModal').classList.add('open');document.getElementById('imgGenPrompt').focus()};
+window.closeImgGen=function(){document.getElementById('imgGenModal').classList.remove('open')};
+window.generateImage=function(){
+  const prompt=document.getElementById('imgGenPrompt').value.trim();if(!prompt){alert('Enter an image description');return}
+  const res=document.getElementById('imgGenResult');
+  res.innerHTML='<p style="color:var(--dm)">Generating image...</p>';
+  const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&nologo=true`;
+  const img=new Image();
+  img.onload=()=>{res.innerHTML=`<img src="${url}" class="gen-img" onclick="window.open(this.src)">
+    <div class="btns" style="margin-top:8px"><button class="btn btn-sm btn-primary" onclick="insertGenImage('${url.replace(/'/g,"\\'")}')">Insert in chat</button>
+    <button class="btn btn-sm btn-secondary" onclick="downloadImg('${url.replace(/'/g,"\\'")}')">💾 Save</button></div>`};
+  img.onerror=()=>{res.innerHTML='<p style="color:var(--rd)">Failed to generate. Try a different prompt.</p>'};
+  img.src=url};
+window.insertGenImage=function(url){
+  if(!activeId){const id=genId();activeId=id;localStorage.setItem(LS_A,id)}
+  const content=`![Generated image](${url})`;
+  history.push({role:'user',content:`Generate an image: ${document.getElementById('imgGenPrompt').value}`});
+  history.push({role:'assistant',content:`Here's your generated image:\n\n![Generated Image](${url})\n\n*Generated with Pollinations.ai*`});
+  renderChat();window.saveCurrentSession();closeImgGen()};
+window.downloadImg=function(url){const a=document.createElement('a');a.href=url;a.download='om-generated.png';a.click()};
+
+// ── 4. Multi-model comparison ──
+let compareEnabled=false;
+window.compareMode=function(){
+  if(!provider||!apiKey){openSetup();return}
+  compareEnabled=!compareEnabled;
+  alert(compareEnabled?'Compare mode ON: next message will be sent to both Gemini and Groq.\nYou need both API keys set.':'Compare mode OFF');
+};
+
+async function sendCompare(text){
+  const gemKey=localStorage.getItem('om_apikey');
+  const groqKey=localStorage.getItem('om_groq_key')||'';
+  if(!groqKey){
+    const k=prompt('Enter your Groq API key for comparison (get free at console.groq.com):');
+    if(!k)return;localStorage.setItem('om_groq_key',k)}
+  const gKey=localStorage.getItem('om_groq_key');
+
+  addMsgUI('user',text);history.push({role:'user',content:text});
+  showThinking();
+
+  const sysPrompt=buildSystemPrompt();
+  const contents=history.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:typeof m.content==='string'?m.content:m.content[0]?.text||''}]}));
+  const groqMsgs=[{role:'system',content:sysPrompt},...history.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:m.content[0]?.text||''}))];
+
+  let geminiReply='',groqReply='';
+  try{
+    const[gRes,grRes]=await Promise.allSettled([
+      fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${gemKey}`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({system_instruction:{parts:[{text:sysPrompt}]},contents,generationConfig:{temperature:0.7,maxOutputTokens:4096}})}).then(r=>r.json()),
+      fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${gKey}`},
+        body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:groqMsgs,temperature:0.7,max_tokens:4096})}).then(r=>r.json())
+    ]);
+    if(gRes.status==='fulfilled'&&gRes.value.candidates)geminiReply=gRes.value.candidates[0].content.parts.map(p=>p.text||'').join('');
+    else geminiReply='*Gemini error*';
+    if(grRes.status==='fulfilled'&&grRes.value.choices)groqReply=grRes.value.choices[0].message.content;
+    else groqReply='*Groq error*';
+  }catch(e){geminiReply='Error: '+e.message;groqReply='Error: '+e.message}
+
+  hideThinking();
+  const chat=document.getElementById('chat');
+  const d=document.createElement('div');d.className='msg assistant';
+  d.innerHTML=`<div class="compare-container">
+    <div class="compare-col"><div class="compare-label">✨ Gemini</div><div class="bbl" style="border:1px solid var(--sf2);border-radius:var(--r)">${renderMd(geminiReply)}</div>
+      <button class="compare-pick" onclick="pickCompare('gemini',${history.length})">Use this response</button></div>
+    <div class="compare-col"><div class="compare-label">⚡ Groq</div><div class="bbl" style="border:1px solid var(--sf2);border-radius:var(--r)">${renderMd(groqReply)}</div>
+      <button class="compare-pick" onclick="pickCompare('groq',${history.length})">Use this response</button></div></div>`;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+  // Store both temporarily
+  d.dataset.gemini=geminiReply;d.dataset.groq=groqReply;
+  compareEnabled=false;
+}
+window.pickCompare=function(choice,idx){
+  const compare=document.querySelector('.compare-container');if(!compare)return;
+  const reply=choice==='gemini'?compare.closest('.msg').dataset.gemini:compare.closest('.msg').dataset.groq;
+  history.push({role:'assistant',content:reply});
+  renderChat();window.saveCurrentSession()};
+
+// ── 5. Conversation branching ──
+let branches={};
+window.branchAt=function(i){
+  const branchId=genId();const branchHistory=history.slice(0,i);
+  branches[branchId]={parent:activeId,messages:[...branchHistory],createdAt:Date.now()};
+  localStorage.setItem('om_branches',JSON.stringify(branches));
+  // Create a new session from the branch point
+  const id=genId();activeId=id;localStorage.setItem(LS_A,id);
+  history=[...branchHistory];renderChat();
+  window.saveCurrentSession();
+  alert(`Branched! This is a new path from message ${i}. Original chat preserved.`)};
+
+// ── 6. Offline mode ──
+let offlineQueue=[];
+function initOfflineMode(){
+  window.addEventListener('online',()=>{document.getElementById('offlineBar').classList.remove('show');flushOfflineQueue()});
+  window.addEventListener('offline',()=>{document.getElementById('offlineBar').classList.add('show')});
+  if(!navigator.onLine)document.getElementById('offlineBar').classList.add('show');
+  try{offlineQueue=JSON.parse(localStorage.getItem('om_offline_queue')||'[]')}catch(e){offlineQueue=[]}}
+function queueOfflineMessage(text){offlineQueue.push({text,timestamp:Date.now()});
+  localStorage.setItem('om_offline_queue',JSON.stringify(offlineQueue));
+  addMsgUI('user',text);history.push({role:'user',content:text});
+  addMsgUI('assistant','*You are offline. This message will be sent when you reconnect.*');
+  history.push({role:'assistant',content:'*Queued while offline*'});window.saveCurrentSession()}
+async function flushOfflineQueue(){
+  if(!offlineQueue.length)return;const queue=[...offlineQueue];offlineQueue=[];localStorage.removeItem('om_offline_queue');
+  for(const msg of queue){document.getElementById('input').value=msg.text;await send()}}
+
+// ── Keyboard shortcuts (updated with new features) ──
 document.addEventListener('keydown',function(e){
   if(e.ctrlKey&&e.key==='n'){e.preventDefault();newSession()}
   else if(e.ctrlKey&&e.key==='k'){e.preventDefault();openSessions()}
   else if(e.ctrlKey&&e.shiftKey&&e.key==='S'){e.preventDefault();shareChat()}
-  else if(e.key==='Escape'){closeSetup();closeSessions();closeShare();document.getElementById('tplDrawer').classList.remove('open')}
+  else if(e.ctrlKey&&e.key==='i'){e.preventDefault();openImgGen()}
+  else if(e.key==='Escape'){closeSetup();closeSessions();closeShare();closeImgGen();document.getElementById('tplDrawer').classList.remove('open')}
 });
 
 // Init
 async function initApp(){
-  initTheme();
+  initTheme();initOfflineMode();
   const s=await loadApiKey();provider=s.provider;apiKey=s.key;
   if(provider&&apiKey){model=provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';setStatus(provider,'var(--gn)')}
   else{setStatus('tap ⚙️','var(--yl)')}
