@@ -478,7 +478,11 @@ async function processStream(stream,onChunk){
 async function send(){
   const inp=document.getElementById('input');const text=inp.value.trim();
   if(!text&&!loading)return;if(!provider||!apiKey){openSetup();return}
-  if(text){inp.value='';window.ar(inp);addMsgUI('user',text);history.push({role:'user',content:text});await window.saveCurrentSession()}
+  if(text){
+    inp.value='';window.ar(inp);
+    // Create session on first message if none exists
+    if(!activeId){const id=genId();activeId=id;localStorage.setItem(LS_A,id)}
+    addMsgUI('user',text);history.push({role:'user',content:text});await window.saveCurrentSession()}
   loading=true;setStopMode();abortCtrl=new AbortController();
   showThinking();let fullReply='';
   try{
@@ -533,8 +537,8 @@ async function initApp(){
   const s=await loadApiKey();provider=s.provider;apiKey=s.key;
   if(provider&&apiKey){model=provider==='gemini'?'gemini-2.5-flash':'llama-3.3-70b-versatile';setStatus(provider,'var(--gn)')}
   else{setStatus('tap ⚙️','var(--yl)')}
-  // Always start with a fresh chat. Old sessions available via 💬.
-  await newSession();
+  // Show blank welcome screen. Session created only when user sends first message.
+  activeId='';history=[];renderChat();
   updateAccountUI();document.getElementById('input').focus()}
 
 if(firebaseEnabled){onAuthStateChanged(auth,async u=>{currentUser=u;
